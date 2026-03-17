@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    font-family: 'Inter', sans-serif;
+    --surface-1: #fffdf6;
+    --surface-2: #fff4d8;
+    --surface-3: #ffffff;
+    --ink-1: #1f1c17;
+    --ink-2: #60584b;
+    --line-soft: #ece2ce;
+    --line-strong: #d9c9aa;
+  }
+
+  body {
+    @apply m-0 text-stone-800 antialiased;
+    background:
+      radial-gradient(1100px 550px at 95% -10%, rgba(252, 211, 77, 0.27), transparent 55%),
+      radial-gradient(900px 500px at -10% 25%, rgba(251, 191, 36, 0.19), transparent 55%),
+      linear-gradient(180deg, var(--surface-1) 0%, var(--surface-2) 100%);
+    color: var(--ink-1);
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply min-h-screen;
+  }
+
+  .surface-panel {
+    @apply rounded-2xl border bg-white/90 shadow-sm backdrop-blur;
+    border-color: var(--line-soft);
+  }
+
+  .surface-subtle {
+    @apply rounded-xl border bg-white/70;
+    border-color: var(--line-soft);
+  }
+
+  .metric-card {
+    @apply rounded-xl border bg-white px-4 py-3;
+    border-color: var(--line-soft);
+    box-shadow: 0 8px 24px -20px rgba(107, 87, 44, 0.8);
+  }
+
+  .label-chip {
+    @apply inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide;
+    border-color: var(--line-strong);
+    color: #7a6442;
+    background: #fff8e8;
+  }
+}
