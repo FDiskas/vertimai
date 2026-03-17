@@ -1,7 +1,8 @@
 import { Check, Copy, Sparkles } from 'lucide-react'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useOpenAITranslate } from '../hooks/useOpenAITranslate'
 import { Button } from './ui/button'
+import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 
 interface TranslationGridProps {
@@ -68,10 +69,9 @@ export function TranslationGrid({
         </p>
       </div>
       <div className="overflow-auto">
-        <table className="min-w-[1080px] w-full border-collapse text-sm">
+        <table className="min-w-[900px] w-full border-collapse text-sm">
           <thead className="sticky top-0 z-10 bg-stone-100/95 backdrop-blur">
           <tr>
-            <th className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">Key</th>
             <th className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">Original ({baseLanguage})</th>
             <th className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">Split Left ({leftLanguage})</th>
             <th className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">Split Right ({rightLanguage})</th>
@@ -80,59 +80,72 @@ export function TranslationGrid({
           <tbody>
             {visibleKeys.map((key) => {
               const entry = translations[key]
-              return (
-                <tr key={key} className="group align-top odd:bg-white even:bg-[#fffdf7] hover:bg-[#fff9ea]">
-                  <td className="border-b border-stone-100 px-3 py-3 align-top">
-                    <div className="space-y-2">
-                      <p className="font-mono text-xs text-stone-700">{key}</p>
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-1 rounded-md border border-stone-200 px-2 py-1 text-[11px] font-medium text-stone-600 transition group-hover:border-stone-300 group-hover:bg-white"
-                        onClick={() => void copyKey(key)}
-                      >
-                        {copiedKey === key ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                        {copiedKey === key ? 'Copied' : 'Copy key'}
-                      </button>
-                    </div>
-                  </td>
-                  <td className="border-b border-stone-100 px-3 py-3">
-                    <Textarea
-                      value={entry[baseLanguage] ?? ''}
-                      onChange={(event) => void onUpdate(key, baseLanguage, event.target.value)}
-                      className="min-h-20 bg-white"
-                    />
-                  </td>
-                  {[leftLanguage, rightLanguage].map((language) => {
-                    const cellId = `${key}:${language}`
-                    const isEmpty = !(entry[language] ?? '').trim()
 
-                    return (
-                      <td key={cellId} className="border-b border-stone-100 px-3 py-3">
-                        <div className="space-y-2">
-                          <Textarea
-                            value={entry[language] ?? ''}
-                            onChange={(event) => void onUpdate(key, language, event.target.value)}
-                            className={`min-h-20 ${isEmpty ? 'border-amber-300 bg-amber-50/40' : 'bg-white'}`}
-                          />
-                          <div className="flex items-center justify-between gap-2">
-                            <span className={`text-[11px] font-medium ${isEmpty ? 'text-amber-700' : 'text-stone-400'}`}>
-                              {isEmpty ? 'Missing translation' : `${(entry[language] ?? '').length} chars`}
-                            </span>
-                            <Button
-                              variant="secondary"
-                              size="sm"
-                              onClick={() => void translateCell(key, language)}
-                              disabled={isTranslating && activeCell !== cellId}
-                            >
-                              <Sparkles className="mr-2 h-3.5 w-3.5" />
-                              {activeCell === cellId ? 'Verciama...' : 'AI Translate'}
-                            </Button>
+              return (
+                <Fragment key={key}>
+                  <tr className="bg-[#fff9ea]">
+                    <td colSpan={3} className="px-3 py-2">
+                      <div className="flex items-center gap-2">
+                        <Input
+                          readOnly
+                          value={key}
+                          className="h-8 bg-gray-100/70 font-mono text-xs text-stone-800"
+                          onFocus={(event) => event.currentTarget.select()}
+                          aria-label={`Translation key ${key}`}
+                        />
+                        <button
+                          type="button"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-stone-200 bg-white text-stone-600 transition hover:border-stone-300"
+                          onClick={() => void copyKey(key)}
+                          aria-label="Copy key"
+                          title="Copy key"
+                        >
+                          {copiedKey === key ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr className="group align-top odd:bg-white even:bg-[#fffdf7] hover:bg-[#fff9ea]">
+                    <td className="border-b border-stone-100 px-3 py-3">
+                      <Textarea
+                        value={entry[baseLanguage] ?? ''}
+                        onChange={(event) => void onUpdate(key, baseLanguage, event.target.value)}
+                        className="min-h-20 bg-white"
+                      />
+                    </td>
+                    {[leftLanguage, rightLanguage].map((language) => {
+                      const cellId = `${key}:${language}`
+                      const isEmpty = !(entry[language] ?? '').trim()
+
+                      return (
+                        <td key={cellId} className="border-b border-stone-100 px-3 py-3">
+                          <div className="space-y-2">
+                            <Textarea
+                              value={entry[language] ?? ''}
+                              onChange={(event) => void onUpdate(key, language, event.target.value)}
+                              className={`min-h-20 ${isEmpty ? 'border-amber-300 bg-amber-50/40' : 'bg-white'}`}
+                            />
+                            <div className="flex items-center justify-between gap-2">
+                              <span className={`text-[11px] font-medium ${isEmpty ? 'text-amber-700' : 'text-stone-400'}`}>
+                                {isEmpty ? 'Missing translation' : `${(entry[language] ?? '').length} chars`}
+                              </span>
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => void translateCell(key, language)}
+                                disabled={isTranslating && activeCell !== cellId}
+                              >
+                                <Sparkles className="mr-2 h-3.5 w-3.5" />
+                                {activeCell === cellId ? 'Verciama...' : 'AI Translate'}
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                    )
-                  })}
-                </tr>
+                        </td>
+                      )
+                    })}
+                  </tr>
+                </Fragment>
               )
             })}
           </tbody>
