@@ -125,4 +125,29 @@ describe("translation utils", () => {
     expect(raw).toContain('"hello"');
     expect(raw).toContain('"lt"');
   });
+
+  it("serializuojant plural JSON string, grazina objekta", () => {
+    const raw = serializeTranslations({
+      monthMilesPlan: {
+        en: JSON.stringify({
+          one: "{months} month / {miles} miles plan",
+          other: "{months} months / {miles} miles plan",
+        }),
+        lt: "",
+      },
+    });
+
+    const parsed = JSON.parse(raw) as {
+      monthMilesPlan: {
+        en: Record<string, string>;
+        lt: string;
+      };
+    };
+
+    expect(parsed.monthMilesPlan.en).toEqual({
+      one: "{months} month / {miles} miles plan",
+      other: "{months} months / {miles} miles plan",
+    });
+    expect(parsed.monthMilesPlan.lt).toBe("");
+  });
 });

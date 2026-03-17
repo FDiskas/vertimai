@@ -217,7 +217,33 @@ export function calculateCompletion(
 }
 
 export function serializeTranslations(translations: TranslationMap): string {
-  return JSON.stringify(translations, null, 2);
+  const exportPayload: Record<
+    string,
+    Record<string, string | Record<string, string>>
+  > = {};
+
+  for (const [key, entry] of Object.entries(translations)) {
+    exportPayload[key] = {};
+
+    for (const [language, value] of Object.entries(entry)) {
+      const trimmed = value.trim();
+      if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+        try {
+          const parsed = JSON.parse(value);
+          if (isPluralObject(parsed)) {
+            exportPayload[key][language] = parsed;
+            continue;
+          }
+        } catch {
+          // Keep original value when it's not valid JSON.
+        }
+      }
+
+      exportPayload[key][language] = value;
+    }
+  }
+
+  return JSON.stringify(exportPayload, null, 2);
 }
 
 export function getFilteredKeys(
