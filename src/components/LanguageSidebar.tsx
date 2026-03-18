@@ -1,14 +1,43 @@
+import { Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import type { FormEvent } from 'react'
 import type { LanguageCode } from '../types/translation'
 import { Badge } from './ui/badge'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
 
 interface LanguageSidebarProps {
   languages: LanguageCode[]
+  baseLanguage: LanguageCode
   selected: [LanguageCode, LanguageCode]
   onSelect: (left: LanguageCode, right: LanguageCode) => void
+  onAddLanguage: (language: LanguageCode) => Promise<void>
+  onRemoveLanguage: (language: LanguageCode) => Promise<void>
   getCompletion: (language: LanguageCode) => { percent: number; translated: number; total: number }
 }
 
-export function LanguageSidebar({ languages, selected, onSelect, getCompletion }: LanguageSidebarProps) {
+export function LanguageSidebar({
+  languages,
+  baseLanguage,
+  selected,
+  onSelect,
+  onAddLanguage,
+  onRemoveLanguage,
+  getCompletion,
+}: LanguageSidebarProps) {
+  const [newLanguageCode, setNewLanguageCode] = useState('')
+
+  const submitLanguage = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const code = newLanguageCode.trim()
+    if (!code) {
+      return
+    }
+
+    await onAddLanguage(code)
+    setNewLanguageCode('')
+  }
+
   return (
     <aside className="surface-panel h-fit space-y-4 p-4 md:sticky md:top-[76px]">
       <div>
@@ -49,14 +78,27 @@ export function LanguageSidebar({ languages, selected, onSelect, getCompletion }
       <div className="space-y-2 pt-2">
         {languages.map((language) => {
           const completion = getCompletion(language)
+          const isBaseLanguage = language === baseLanguage
 
           return (
             <div key={language} className="surface-subtle space-y-2 px-3 py-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-stone-800">{language}</span>
-                <Badge>
-                  {completion.percent}% ({completion.translated}/{completion.total})
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge>
+                    {completion.percent}% ({completion.translated}/{completion.total})
+                  </Badge>
+                  <button
+                    type="button"
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-stone-200 bg-white text-stone-500 transition hover:border-rose-200 hover:text-rose-600 disabled:cursor-not-allowed disabled:opacity-50"
+                    onClick={() => void onRemoveLanguage(language)}
+                    disabled={isBaseLanguage}
+                    title={isBaseLanguage ? 'Bazines kalbos trinti negalima' : `Istrinti ${language}`}
+                    aria-label={isBaseLanguage ? 'Bazines kalbos trinti negalima' : `Istrinti ${language}`}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               </div>
               <div className="h-2 rounded-full bg-stone-200">
                 <div className="h-full rounded-full bg-amber-500 transition-all" style={{ width: `${completion.percent}%` }} />
@@ -65,6 +107,24 @@ export function LanguageSidebar({ languages, selected, onSelect, getCompletion }
           )
         })}
       </div>
+
+      <form className="space-y-2 border-t border-stone-200 pt-3" onSubmit={(event) => void submitLanguage(event)}>
+        <label htmlFor="new-language" className="block text-xs font-medium uppercase tracking-wide text-stone-500">
+          Prideti kalba
+        </label>
+        <div className="flex items-center gap-2">
+          <Input
+            id="new-language"
+            placeholder="pvz. de arba fr"
+            value={newLanguageCode}
+            onChange={(event) => setNewLanguageCode(event.target.value)}
+          />
+          <Button type="submit" variant="secondary" size="sm" className="shrink-0">
+            <Plus className="mr-2 h-3.5 w-3.5" />
+            Add
+          </Button>
+        </div>
+      </form>
     </aside>
   )
 }

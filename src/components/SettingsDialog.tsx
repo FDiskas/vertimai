@@ -22,7 +22,7 @@ export function SettingsDialog() {
         <DialogHeader>
           <DialogTitle>Nustatymai</DialogTitle>
           <DialogDescription>
-            OPENAI_API_KEY saugomas tik jūsų naršyklėje localStorage. Niekada neįrašykite rakto į source code.
+            OPENAI_API_KEY gali butu adresu https://platform.openai.com/api-keys
           </DialogDescription>
         </DialogHeader>
 
@@ -47,7 +47,7 @@ export function SettingsDialog() {
 
         <div className="mt-4 flex justify-end gap-2">
           <Button variant="secondary" onClick={() => setDraft(apiKey)}>
-            Atšaukti
+            Trinti
           </Button>
           <Button onClick={() => setApiKey(draft)}>Išsaugoti</Button>
         </div>

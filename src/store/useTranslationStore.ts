@@ -39,6 +39,9 @@ interface TranslationState {
     value: string,
   ) => Promise<void>;
   addKey: (key: string) => Promise<void>;
+  removeKey: (key: string) => Promise<void>;
+  addLanguage: (language: LanguageCode) => Promise<void>;
+  removeLanguage: (language: LanguageCode) => Promise<void>;
   setSearch: (value: string) => void;
   setUntranslatedOnly: (value: boolean) => void;
   setSelectedLanguages: (left: LanguageCode, right: LanguageCode) => void;
@@ -177,6 +180,120 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
     }
   },
 
+  removeKey: async (key) => {
+    const state = get();
+
+    if (!state.translations[key]) {
+      set({ error: "Toks raktas nerastas." });
+      return;
+    }
+
+    const { [key]: _removed, ...nextTranslations } = state.translations;
+
+    set({
+      translations: nextTranslations,
+      error: null,
+    });
+
+    await persistSnapshot(
+      state.fileName,
+      nextTranslations,
+      state.languages,
+      state.baseLanguage,
+    );
+  },
+
+  addLanguage: async (language) => {
+    const state = get();
+    const normalized = language.trim().toLowerCase();
+
+    if (!normalized) {
+      set({ error: "Kalbos kodas negali būti tuščias." });
+      return;
+    }
+
+    if (!/^[a-z]{2,3}(?:[-_][a-z0-9]{2,8})*$/.test(normalized)) {
+      set({ error: "Neteisingas kalbos kodas. Pvz: lt, en, en-us." });
+      return;
+    }
+
+    if (state.languages.includes(normalized)) {
+      set({ error: "Tokia kalba jau pridėta." });
+      return;
+    }
+
+    const nextLanguages = [...state.languages, normalized];
+    const nextTranslations: TranslationMap = {};
+
+    for (const [key, entry] of Object.entries(state.translations)) {
+      nextTranslations[key] = {
+        ...entry,
+        [normalized]: entry[normalized] ?? "",
+      };
+    }
+
+    set({
+      languages: nextLanguages,
+      translations: nextTranslations,
+      error: null,
+    });
+
+    await persistSnapshot(
+      state.fileName,
+      nextTranslations,
+      nextLanguages,
+      state.baseLanguage,
+    );
+  },
+
+  removeLanguage: async (language) => {
+    const state = get();
+
+    if (!state.languages.includes(language)) {
+      set({ error: "Tokios kalbos sąraše nėra." });
+      return;
+    }
+
+    if (language === state.baseLanguage) {
+      set({ error: "Bazinės kalbos ištrinti negalima." });
+      return;
+    }
+
+    if (state.languages.length <= 2) {
+      set({ error: "Turi likti bent dvi kalbos split view režimui." });
+      return;
+    }
+
+    const nextLanguages = state.languages.filter((item) => item !== language);
+    const nextTranslations: TranslationMap = {};
+
+    for (const [key, entry] of Object.entries(state.translations)) {
+      const { [language]: _removed, ...rest } = entry;
+      nextTranslations[key] = rest;
+    }
+
+    const [left, right] = state.selectedLanguages;
+    const nextLeft = nextLanguages.includes(left) ? left : state.baseLanguage;
+    const nextRight =
+      nextLanguages.includes(right) && right !== nextLeft
+        ? right
+        : (nextLanguages.find((item) => item !== nextLeft) ?? nextLeft);
+
+    set({
+      languages: nextLanguages,
+      translations: nextTranslations,
+      selectedLanguages: [nextLeft, nextRight],
+      error: null,
+    });
+
+    await persistSnapshot(
+      state.fileName,
+      nextTranslations,
+      nextLanguages,
+      state.baseLanguage,
+    );
+  },
+
   setSearch: (value) => {
     set({ search: value });
   },
@@ -225,6 +342,7 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
 
   clearAll: async () => {
     await clearPersistedData();
+    localStorage.removeItem(API_KEY_STORAGE_KEY);
     set({
       fileName: "translations.json",
       translations: {},
@@ -233,6 +351,7 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
       selectedLanguages: ["en", "lt"],
       search: "",
       untranslatedOnly: false,
+      apiKey: "",
       error: null,
     });
   },

@@ -13,6 +13,67 @@ interface UseOpenAITranslateResult {
   translate: (params: TranslateParams) => Promise<string>;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function extractTranslatedText(data: unknown): string | null {
+  if (!isRecord(data)) {
+    return null;
+  }
+
+  if (typeof data.output_text === "string" && data.output_text.trim()) {
+    return data.output_text.trim();
+  }
+
+  if (Array.isArray(data.output)) {
+    for (const outputItem of data.output) {
+      if (!isRecord(outputItem) || !Array.isArray(outputItem.content)) {
+        continue;
+      }
+
+      for (const contentItem of outputItem.content) {
+        if (!isRecord(contentItem)) {
+          continue;
+        }
+
+        if (
+          (contentItem.type === "output_text" || contentItem.type === "text") &&
+          typeof contentItem.text === "string" &&
+          contentItem.text.trim()
+        ) {
+          return contentItem.text.trim();
+        }
+      }
+    }
+  }
+
+  if (Array.isArray(data.choices)) {
+    const firstChoice = data.choices[0];
+    if (isRecord(firstChoice) && isRecord(firstChoice.message)) {
+      const content = firstChoice.message.content;
+
+      if (typeof content === "string" && content.trim()) {
+        return content.trim();
+      }
+
+      if (Array.isArray(content)) {
+        for (const part of content) {
+          if (!isRecord(part)) {
+            continue;
+          }
+
+          if (typeof part.text === "string" && part.text.trim()) {
+            return part.text.trim();
+          }
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
 export function useOpenAITranslate(): UseOpenAITranslateResult {
   const [isTranslating, setIsTranslating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,8 +125,8 @@ export function useOpenAITranslate(): UseOpenAITranslateResult {
           );
         }
 
-        const data = (await response.json()) as { output_text?: string };
-        const translated = data.output_text?.trim();
+        const data = (await response.json()) as unknown;
+        const translated = extractTranslatedText(data);
 
         if (!translated) {
           throw new Error("OpenAI negrąžino vertimo teksto.");

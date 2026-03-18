@@ -9,14 +9,9 @@ export interface NormalizedPayload {
   translations: TranslationMap;
 }
 
-const pluralCategoryKeys = new Set([
-  "zero",
-  "one",
-  "two",
-  "few",
-  "many",
-  "other",
-]);
+export type StructuredTranslationObject = {
+  [key: string]: string | StructuredTranslationObject;
+};
 
 const languageCodePattern = /^[a-z]{2,3}(?:[-_][A-Za-z0-9]{2,8})*$/;
 
@@ -24,7 +19,9 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
-function isPluralObject(value: unknown): value is Record<string, string> {
+function isStructuredTranslationObject(
+  value: unknown,
+): value is StructuredTranslationObject {
   if (!isPlainObject(value)) {
     return false;
   }
@@ -35,9 +32,92 @@ function isPluralObject(value: unknown): value is Record<string, string> {
   }
 
   return entries.every(
-    ([key, entryValue]) =>
-      pluralCategoryKeys.has(key) && typeof entryValue === "string",
+    ([, entryValue]) =>
+      typeof entryValue === "string" ||
+      isStructuredTranslationObject(entryValue),
   );
+}
+
+function countStructuredLeaves(value: StructuredTranslationObject): {
+  total: number;
+  translated: number;
+} {
+  let total = 0;
+  let translated = 0;
+
+  const visit = (node: StructuredTranslationObject) => {
+    for (const nestedValue of Object.values(node)) {
+      if (typeof nestedValue === "string") {
+        total += 1;
+        if (nestedValue.trim()) {
+          translated += 1;
+        }
+        continue;
+      }
+
+      visit(nestedValue);
+    }
+  };
+
+  visit(value);
+
+  return { total, translated };
+}
+
+function collectStructuredSearchTokens(
+  value: StructuredTranslationObject,
+  tokens: string[],
+) {
+  for (const [nestedKey, nestedValue] of Object.entries(value)) {
+    tokens.push(nestedKey.toLowerCase());
+
+    if (typeof nestedValue === "string") {
+      tokens.push(nestedValue.toLowerCase());
+      continue;
+    }
+
+    collectStructuredSearchTokens(nestedValue, tokens);
+  }
+}
+
+export function parseStructuredTranslationValue(
+  value: string,
+): StructuredTranslationObject | null {
+  const trimmed = value.trim();
+  if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (!isStructuredTranslationObject(parsed)) {
+      return null;
+    }
+
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function isTranslatedValue(value: string): boolean {
+  const structured = parseStructuredTranslationValue(value);
+  if (!structured) {
+    return value.trim().length > 0;
+  }
+
+  const stats = countStructuredLeaves(structured);
+  return stats.total > 0 && stats.translated === stats.total;
+}
+
+function hasMissingTranslationValue(value: string): boolean {
+  const structured = parseStructuredTranslationValue(value);
+  if (!structured) {
+    return !value.trim();
+  }
+
+  const stats = countStructuredLeaves(structured);
+  return stats.total === 0 || stats.translated < stats.total;
 }
 
 function isLanguageMapObject(value: unknown): value is Record<string, string> {
@@ -81,15 +161,6 @@ export function normalizeTranslationPayload(
       languages.add(defaultSourceLanguage);
       translations[path] = {
         [defaultSourceLanguage]: entry,
-      };
-      return;
-    }
-
-    if (isPluralObject(entry)) {
-      hasDefaultSourceEntries = true;
-      languages.add(defaultSourceLanguage);
-      translations[path] = {
-        [defaultSourceLanguage]: JSON.stringify(entry),
       };
       return;
     }
@@ -205,7 +276,7 @@ export function calculateCompletion(
 
   const translated = keys.reduce((count, key) => {
     const value = translations[key]?.[language] ?? "";
-    return value.trim() ? count + 1 : count;
+    return isTranslatedValue(value) ? count + 1 : count;
   }, 0);
 
   return {
@@ -219,24 +290,17 @@ export function calculateCompletion(
 export function serializeTranslations(translations: TranslationMap): string {
   const exportPayload: Record<
     string,
-    Record<string, string | Record<string, string>>
+    Record<string, string | StructuredTranslationObject>
   > = {};
 
   for (const [key, entry] of Object.entries(translations)) {
     exportPayload[key] = {};
 
     for (const [language, value] of Object.entries(entry)) {
-      const trimmed = value.trim();
-      if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
-        try {
-          const parsed = JSON.parse(value);
-          if (isPluralObject(parsed)) {
-            exportPayload[key][language] = parsed;
-            continue;
-          }
-        } catch {
-          // Keep original value when it's not valid JSON.
-        }
+      const parsed = parseStructuredTranslationValue(value);
+      if (parsed) {
+        exportPayload[key][language] = parsed;
+        continue;
       }
 
       exportPayload[key][language] = value;
@@ -257,11 +321,21 @@ export function getFilteredKeys(
   return Object.keys(translations).filter((key) => {
     const entry = translations[key];
     const values = Object.values(entry);
+    const searchableValues = values.flatMap((value) => {
+      const structured = parseStructuredTranslationValue(value);
+      if (!structured) {
+        return [value.toLowerCase()];
+      }
+
+      const tokens: string[] = [];
+      collectStructuredSearchTokens(structured, tokens);
+      return tokens;
+    });
 
     const matchSearch =
       !query ||
       key.toLowerCase().includes(query) ||
-      values.some((value) => value.toLowerCase().includes(query));
+      searchableValues.some((value) => value.includes(query));
 
     if (!matchSearch) {
       return false;
@@ -272,9 +346,9 @@ export function getFilteredKeys(
     }
 
     if (languageFilter) {
-      return !(entry[languageFilter] ?? "").trim();
+      return hasMissingTranslationValue(entry[languageFilter] ?? "");
     }
 
-    return values.some((value) => !value.trim());
+    return values.some((value) => hasMissingTranslationValue(value));
   });
 }

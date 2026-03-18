@@ -1,0 +1,756 @@
+{
+  "copyUrl": {
+    "en": "Copy url to clipboard",
+    "lt": "Nukopijuoti nuorodą į iškarpinę"
+  },
+  "copiedToClipboard": {
+    "en": "Copied to clipboard!",
+    "lt": "Nukopijuota į iškarpinę!"
+  },
+  "share": {
+    "en": "Share",
+    "lt": "Dalintis"
+  },
+  "shareYourOfferWithOthers": {
+    "en": "Share your offer with others!",
+    "lt": "Pasidalinkite savo pasiūlymu su kitais!"
+  },
+  "useThisUrlToShareYourOfferWithOtherPeople": {
+    "en": "Use this url to share your offer with other people!",
+    "lt": "Naudokite šį URL, kad pasidalintumėte savo pasiūlymu su kitais!"
+  },
+  "cart": {
+    "en": "Cart",
+    "lt": "Krepšelis"
+  },
+  "orderSummary": {
+    "en": "Order summary",
+    "lt": ""
+  },
+  "frequentlyAskedQuestions": {
+    "en": "Frequently Asked Questions",
+    "lt": ""
+  },
+  "thereAreCurrentlyNoFrequentlyAskedQuestionsProvided": {
+    "en": "There are currently no frequently asked questions provided. If you have a question, please feel free to contact us!",
+    "lt": ""
+  },
+  "findAnswersToCommonQuestionsBelow": {
+    "en": "Find answers to common questions below. We've compiled this list based on inquiries from our community to help you quickly find the information you need. If you don't see your question addressed here, please feel free to contact us directly.",
+    "lt": ""
+  },
+  "vinIsRequired": {
+    "en": "VIN is required",
+    "lt": "VIN yra privalomas"
+  },
+  "mileageIsRequired": {
+    "en": "Mileage is required",
+    "lt": ""
+  },
+  "mileageIsTooHigh": {
+    "en": "Mileage is too high",
+    "lt": ""
+  },
+  "mileageIsTooLow": {
+    "en": "Mileage is too low",
+    "lt": ""
+  },
+  "invalidVin": {
+    "en": "Invalid VIN",
+    "lt": ""
+  },
+  "anErrorOccurred": {
+    "en": "An error occurred",
+    "lt": ""
+  },
+  "vin": {
+    "en": "VIN",
+    "lt": ""
+  },
+  "mileage": {
+    "en": "Mileage",
+    "lt": ""
+  },
+  "requiredShort": {
+    "en": "*",
+    "lt": ""
+  },
+  "placeHolderAddVin": {
+    "en": "Add VIN...",
+    "lt": ""
+  },
+  "placeHolderAddMileage": {
+    "en": "Add mileage...",
+    "lt": ""
+  },
+  "viewPrices": {
+    "en": "View Prices",
+    "lt": ""
+  },
+  "clearForm": {
+    "en": "Clear Form",
+    "lt": ""
+  },
+  "planDetails": {
+    "en": "Plan Details",
+    "lt": ""
+  },
+  "delete": {
+    "en": "Delete",
+    "lt": ""
+  },
+  "total": {
+    "en": "Total",
+    "lt": ""
+  },
+  "totalPrice": {
+    "en": "Total price",
+    "lt": ""
+  },
+  "checkout": {
+    "en": "Checkout",
+    "lt": ""
+  },
+  "viewCart": {
+    "en": "View Cart",
+    "lt": ""
+  },
+  "coverageIncludes": {
+    "en": "Coverage Includes",
+    "lt": ""
+  },
+  "benefits": {
+    "en": "Benefits",
+    "lt": ""
+  },
+  "productImage": {
+    "en": "Product image",
+    "lt": ""
+  },
+  "mostPopular": {
+    "en": "Most popular",
+    "lt": ""
+  },
+  "seeDetails": {
+    "en": "See Details",
+    "lt": ""
+  },
+  "seePrices": {
+    "en": "See Prices",
+    "lt": ""
+  },
+  "addYouCarInformationBelowToGetPersonalSuggestions": {
+    "en": "Add you car information below to get personal suggestions!",
+    "lt": ""
+  },
+  "showLess": {
+    "en": "Show Less △",
+    "lt": ""
+  },
+  "showMore": {
+    "en": "Show More ▽",
+    "lt": ""
+  },
+  "tellUsAboutYourVehicle": {
+    "en": "Tell us about your vehicle.",
+    "lt": ""
+  },
+  "inOrderToSeePricesWeNeedALittleMoreInformationAboutYourVehicle": {
+    "en": "In order to see prices we need a little more information about your vehicle",
+    "lt": ""
+  },
+  "monthMilesPlan": {
+    "en": {
+      "one": "{months} month / {miles} miles plan",
+      "other": "{months} months / {miles} miles plan"
+    },
+    "lt": ""
+  },
+  "coverageDeductible": {
+    "en": "{coverage}: {deductible} deductible",
+    "lt": ""
+  },
+  "orPriceMonth": {
+    "en": "or {price}/month",
+    "lt": ""
+  },
+  "loading": {
+    "en": "Loading...",
+    "lt": ""
+  },
+  "errorLoadingCart": {
+    "en": "Error Loading Cart",
+    "lt": ""
+  },
+  "somethingWentWrongPleaseTryAgainLater": {
+    "en": "Something went wrong. Please try again later.",
+    "lt": ""
+  },
+  "clearingYourCartMayResolveTheIssue": {
+    "en": "Clearing your cart may resolve the issue",
+    "lt": ""
+  },
+  "clearCart": {
+    "en": "Clear Cart",
+    "lt": ""
+  },
+  "cartIsEmpty": {
+    "en": "Cart is empty",
+    "lt": ""
+  },
+  "startShoppingNowToDiscoverOurLatestProductsTailoredForYou": {
+    "en": "Start shopping now to discover our latest products tailored for you!",
+    "lt": ""
+  },
+  "continueShopping": {
+    "en": "Continue shopping",
+    "lt": ""
+  },
+  "monthSuffix": {
+    "en": "/mo",
+    "lt": ""
+  },
+  "payInFull": {
+    "en": "Pay in Full",
+    "lt": ""
+  },
+  "price": {
+    "en": "Price",
+    "lt": ""
+  },
+  "tax": {
+    "en": "Tax",
+    "lt": ""
+  },
+  "taxPercentage": {
+    "en": "Tax ({taxRate}%)",
+    "lt": ""
+  },
+  "missingCartCredentialsPleaseRefreshAndTryAgain": {
+    "en": "Missing cart credentials. Please refresh and try again.",
+    "lt": ""
+  },
+  "failedToRemoveItemFromTheCartPleaseRefreshAndTryAgain": {
+    "en": "Failed to remove item from the cart. Please refresh and try again.",
+    "lt": ""
+  },
+  "failedAddItemToCartPleaseTryAgain": {
+    "en": "Failed add item to cart. Please try again.",
+    "lt": ""
+  },
+  "failedToCreateCartPleaseTryAgain": {
+    "en": "Failed to create cart. Please try again.",
+    "lt": ""
+  },
+  "cartNotFoundPleaseRefreshAndTryAgain": {
+    "en": "Cart not found. Please refresh and try again.",
+    "lt": ""
+  },
+  "failedToProcessCheckoutPleaseTryAgain": {
+    "en": "Failed to process checkout. Please try again.",
+    "lt": ""
+  },
+  "checkoutCancelled": {
+    "en": "Checkout cancelled",
+    "lt": ""
+  },
+  "checkoutCancelledInfoMessage": {
+    "en": "Your checkout has been cancelled and no payment was processed. Your items will remain in your cart if you'd like to complete your purchase later.",
+    "lt": ""
+  },
+  "backToHomepage": {
+    "en": "Back to Homepage",
+    "lt": ""
+  },
+  "success": {
+    "en": "Success!",
+    "lt": ""
+  },
+  "checkoutProcessedInfoMessage": {
+    "en": "Your payment is being processed. You will receive a confirmation email once the transaction is complete.",
+    "lt": ""
+  },
+  "thankYou": {
+    "en": "Thank you!",
+    "lt": ""
+  },
+  "getTheRightCoverageForYourVehicle": {
+    "en": "Get the right coverage for your vehicle.",
+    "lt": ""
+  },
+  "stayProtected": {
+    "en": "Stay Protected",
+    "lt": ""
+  },
+  "somethingMissing": {
+    "en": "Something's missing.",
+    "lt": ""
+  },
+  "sorryWeCantFindThatPageYoullFindLotsToExploreOnTheHomePage": {
+    "en": "Sorry, we can't find that page. You'll find lots to explore on the home page.",
+    "lt": ""
+  },
+  "contractsExpiringInTheNextDays": {
+    "en": {
+      "one": "Contracts expiring in the next {days} day",
+      "other": "Contract expiring in the next {days} days"
+    },
+    "lt": ""
+  },
+  "contractsExpiringInTheNextDaysShort": {
+    "en": {
+      "one": "Expires in {days} day",
+      "other": "Expires in {days} days"
+    },
+    "lt": ""
+  },
+  "productDescription": {
+    "en": "Product Description",
+    "lt": ""
+  },
+  "noImagesAvailable": {
+    "en": "No images available",
+    "lt": ""
+  },
+  "purchaseOptions": {
+    "en": "Purchase Options",
+    "lt": ""
+  },
+  "selectToAddToCar": {
+    "en": "(Select to add to cart)",
+    "lt": ""
+  },
+  "addToCart": {
+    "en": "Add to Cart",
+    "lt": ""
+  },
+  "hidePlanDetails": {
+    "en": "Hide Plan Details",
+    "lt": ""
+  },
+  "weAlsoRecommend": {
+    "en": "We also recommend",
+    "lt": ""
+  },
+  "noDetails": {
+    "en": "No details",
+    "lt": ""
+  },
+  "renew.continue": {
+    "en": "Continue",
+    "lt": ""
+  },
+  "renew.notInterested": {
+    "en": "Not interested",
+    "lt": ""
+  },
+  "renew.closingMessageRenewalScreen": {
+    "en": "Protecting your vehicle is important to us. If you ever change your mind in the future, please don’t hesitate to reach out - we’ll be here to help.",
+    "lt": ""
+  },
+  "renew.contractsExpiringRenewalScreen": {
+    "en": "Ok, great! Let's review what is expiring soon and see what replacement options are available:",
+    "lt": ""
+  },
+  "renew.introRenewalScreen": {
+    "en": "Hi, {customerFirstName} 👋 This is {managerFirstName} from {dealerName}. We hope you're doing well and that your {carBrand} has been providing you with an exceptional ownership experience. As your trusted dealer, we want to make you aware that one or more of your vehicle protection plans are about to expire and can be renewed now with no credit check, interest-free, and financing options.",
+    "lt": ""
+  },
+  "renew.doYouStillOwnThisVehicle": {
+    "en": "Do you still own this vehicle?",
+    "lt": ""
+  },
+  "renew.purchaseDate": {
+    "en": "Purchase Date: {purchaseDate}",
+    "lt": ""
+  },
+  "renew.vinNumber": {
+    "en": "Vin # (Last 8): {vinNumber}",
+    "lt": ""
+  },
+  "renew.mileageRenewalScreen": {
+    "en": "Great! To make sure we provide you with the most accurate and up-to-date options, could you please share your vehicle's current mileage?",
+    "lt": ""
+  },
+  "renew.newVehicleRenewalScreen": {
+    "en": "Okay, thanks. We will make sure we update our records accordingly. If you haven't found a replacement vehicle yet, we have both new and used available onsite that we would love to show you!",
+    "lt": ""
+  },
+  "renew.renewalOptions": {
+    "en": "Renewal Options",
+    "lt": ""
+  },
+  "renew.visitSchedulingRenewalScreen": {
+    "en": "Great! We will reach out to schedule a visit to {name}! Thanks for taking the time to talk with us, we look forward to you coming in!",
+    "lt": ""
+  },
+  "renew.imInterestedRenewalScreen": {
+    "en": "I'm interested",
+    "lt": ""
+  },
+  "renew.noThanksRenewalScreen": {
+    "en": "No, thanks",
+    "lt": ""
+  },
+  "reconsider.introReconsiderScreen": {
+    "en": "Hi {customerFirstName} 👋, this is {managerFirstName} from {dealerName}. As the {managerTitle}, I wanted to personally thank you for choosing us for your recent vehicle purchase.",
+    "lt": ""
+  },
+  "reconsider.introReconsiderScreenDescription": {
+    "en": "When you purchased your vehicle, we reviewed a protection plan that you chose not to add at the time. It’s designed to help cover unexpected repair costs. Similar coverage is still available - giving you peace of mind and protection when you need it most.",
+    "lt": ""
+  },
+  "reconsider.continue": {
+    "en": "Continue",
+    "lt": ""
+  },
+  "reconsider.notInterested": {
+    "en": "Not interested",
+    "lt": ""
+  },
+  "reconsider.youMightAlsoConsider": {
+    "en": "You might also consider",
+    "lt": ""
+  },
+  "reconsider.previouslyOffered": {
+    "en": "Previously offered",
+    "lt": ""
+  },
+  "reconsider.protectionPlans": {
+    "en": "Available Protection Plans",
+    "lt": ""
+  },
+  "priceFrom": {
+    "en": "Starting from",
+    "lt": ""
+  },
+  "unlimited": {
+    "en": "Unlimited",
+    "lt": ""
+  },
+  "financingCalculatorDuration": {
+    "en": {
+      "one": "Duration: {duration} Month",
+      "other": "Duration: {duration} Months"
+    },
+    "lt": ""
+  },
+  "financingCalculatorDownPayment": {
+    "en": "Down Payment: {price} ({percentage}%)",
+    "lt": ""
+  },
+  "monthlyPayment": {
+    "en": "Monthly Payment:",
+    "lt": ""
+  },
+  "faq": {
+    "en": "FAQ",
+    "lt": ""
+  },
+  "month": {
+    "en": {
+      "one": "Month",
+      "other": "Months"
+    },
+    "lt": ""
+  },
+  "resultsProvidedInTheCalculatorAreForInformationalPurposesOnly": {
+    "en": "Results provided in the calculator are for informational purposes only.",
+    "lt": ""
+  },
+  "submit": {
+    "en": "Submit",
+    "lt": ""
+  },
+  "customerForm.firstName": {
+    "en": "First Name",
+    "lt": ""
+  },
+  "customerForm.lastName": {
+    "en": "Last Name",
+    "lt": ""
+  },
+  "customerForm.email": {
+    "en": "Email",
+    "lt": ""
+  },
+  "customerForm.phoneNumber": {
+    "en": "Phone Number",
+    "lt": ""
+  },
+  "customerForm.address": {
+    "en": "Address",
+    "lt": ""
+  },
+  "customerForm.city": {
+    "en": "City",
+    "lt": ""
+  },
+  "customerForm.street": {
+    "en": "Street",
+    "lt": ""
+  },
+  "customerForm.postalCode": {
+    "en": "Postal code",
+    "lt": ""
+  },
+  "customerForm.phoneNumberIsRequired": {
+    "en": "Phone number is required",
+    "lt": ""
+  },
+  "customerForm.emailIsRequired": {
+    "en": "Email is required",
+    "lt": ""
+  },
+  "customerForm.firstNameIsRequired": {
+    "en": "First name is required",
+    "lt": ""
+  },
+  "customerForm.lastNameIsRequired": {
+    "en": "Last name is required",
+    "lt": ""
+  },
+  "customerForm.addressIsRequired": {
+    "en": "Address is required",
+    "lt": ""
+  },
+  "customerForm.cityIsRequired": {
+    "en": "City is required",
+    "lt": ""
+  },
+  "customerForm.streetIsRequired": {
+    "en": "Street is required",
+    "lt": ""
+  },
+  "customerForm.postalCodeIsRequired": {
+    "en": "Postal code is required",
+    "lt": ""
+  },
+  "customerForm.placeHolderAddFirstName": {
+    "en": "Add first name...",
+    "lt": ""
+  },
+  "customerForm.placeHolderAddLastName": {
+    "en": "Add last name...",
+    "lt": ""
+  },
+  "customerForm.placeHolderAddEmail": {
+    "en": "Add email...",
+    "lt": ""
+  },
+  "customerForm.placeHolderAddPhoneNumber": {
+    "en": "Add phone number...",
+    "lt": ""
+  },
+  "customerForm.placeHolderAddAddress": {
+    "en": "Add address...",
+    "lt": ""
+  },
+  "customerForm.placeHolderAddCity": {
+    "en": "Add city...",
+    "lt": ""
+  },
+  "customerForm.placeHolderAddStreet": {
+    "en": "Add street...",
+    "lt": ""
+  },
+  "customerForm.placeHolderAddPostalCode": {
+    "en": "Add postal code...",
+    "lt": ""
+  },
+  "customerForm.placeHolderAddStateCode": {
+    "en": "Add state code...",
+    "lt": ""
+  },
+  "customerForm.placeHolderAddCountryCode": {
+    "en": "Add country code...",
+    "lt": ""
+  },
+  "customerForm.phoneNumberIsTooLong": {
+    "en": "Phone number is too long",
+    "lt": ""
+  },
+  "customerForm.emailIsTooLong": {
+    "en": "Email is too long",
+    "lt": ""
+  },
+  "customerForm.firstNameIsTooLong": {
+    "en": "First name is too long",
+    "lt": ""
+  },
+  "customerForm.lastNameIsTooLong": {
+    "en": "Last name is too long",
+    "lt": ""
+  },
+  "customerForm.cityIsTooLong": {
+    "en": "City is too long",
+    "lt": ""
+  },
+  "customerForm.streetIsTooLong": {
+    "en": "Street is too long",
+    "lt": ""
+  },
+  "customerForm.stateCodeIsInvalid": {
+    "en": "State code is invalid",
+    "lt": ""
+  },
+  "customerForm.emailExplanation": {
+    "en": "Email will be used to send documents and information about your order.",
+    "lt": ""
+  },
+  "customerForm.postalCodeMustBeFiveDigits": {
+    "en": "Postal code must be 5 digits",
+    "lt": ""
+  },
+  "customerForm.phoneNumberMustBeTenDigits": {
+    "en": "Phone number must be 10 digits",
+    "lt": ""
+  },
+  "customerForm.stateCode": {
+    "en": "State code",
+    "lt": ""
+  },
+  "customerForm.countryCode": {
+    "en": "Country code",
+    "lt": ""
+  },
+  "customerForm.stateCodeIsRequired": {
+    "en": "State code is required",
+    "lt": ""
+  },
+  "customerForm.countryCodeIsRequired": {
+    "en": "Country code is required",
+    "lt": ""
+  },
+  "addYourInformation": {
+    "en": "Add your information",
+    "lt": ""
+  },
+  "addYourInformationDescription": {
+    "en": "Please fill in form below. This information will be used to process your order.",
+    "lt": ""
+  },
+  "failedUpdateItemToCartPleaseTryAgain": {
+    "en": "Failed to update item in cart. Please try again.",
+    "lt": ""
+  },
+  "signTheContractTitle": {
+    "en": "Sign the contract",
+    "lt": ""
+  },
+  "signTheContractDescription": {
+    "en": "Failing to sign the contract may invalidate your future claims. Please check your email for the link to sign the contract.",
+    "lt": ""
+  },
+  "preparingSignLink": {
+    "en": "Preparing sign link...",
+    "lt": ""
+  },
+  "errorSigningContract": {
+    "en": "Error signing contract. Please refresh your page to try again.",
+    "lt": ""
+  },
+  "addingDifferentVinDisclaimer": {
+    "en": "Viewing prices with a different VIN will clear your cart",
+    "lt": ""
+  },
+  "clickToEdit": {
+    "en": "(Click to Edit)",
+    "lt": ""
+  },
+  "updateCart": {
+    "en": "Update cart",
+    "lt": ""
+  },
+  "financeCalculatorTotalPrice": {
+    "en": "Total Price: ",
+    "lt": ""
+  },
+  "dearCustomer": {
+    "en": "dear customer",
+    "lt": ""
+  },
+  "businessManager": {
+    "en": "Business Manager",
+    "lt": ""
+  },
+  "contractsExpiredDaysShort": {
+    "en": {
+      "one": "Expired {days} day ago",
+      "other": "Expired {days} days ago"
+    },
+    "lt": ""
+  },
+  "totalSavings": {
+    "en": "Total Savings",
+    "lt": ""
+  },
+  "totalSaved": {
+    "en": "Total Saved",
+    "lt": ""
+  },
+  "totalClaims": {
+    "en": "Total Claims",
+    "lt": ""
+  },
+  "youPaid": {
+    "en": "You Paid",
+    "lt": ""
+  },
+  "youSaved": {
+    "en": "You saved",
+    "lt": ""
+  },
+  "initialCost": {
+    "en": "Initial Cost",
+    "lt": ""
+  },
+  "closeWindow": {
+    "en": "Close",
+    "lt": ""
+  },
+  "totalSavedAmount": {
+    "en": "Total Saved: {totalSaved}",
+    "lt": ""
+  },
+  "claimsDescriptionAmount": {
+    "en": "According to your vehicle's repair history, your vehicle had {repairsAmount} repairs that were covered under this protection plan for a total cost of {totalCost}.",
+    "lt": ""
+  },
+  "percentageFinancing": {
+    "en": "0% Financing",
+    "lt": ""
+  },
+  "deductible": {
+    "en": "${deductible} deductible",
+    "lt": ""
+  },
+  "priceAlternativePrefix": {
+    "en": "Or ",
+    "lt": ""
+  },
+  "financingNotOffered": {
+    "en": "Financing not offered",
+    "lt": ""
+  },
+  "priceAlternativeSuffix": {
+    "en": " if paid in full",
+    "lt": ""
+  },
+  "spinnerLoadingText.checkingVehicleInformation": {
+    "en": "Checking vehicle information...",
+    "lt": ""
+  },
+  "spinnerLoadingText.fetchingProducts": {
+    "en": "Fetching products...",
+    "lt": ""
+  },
+  "spinnerLoadingText.calculatingPrices": {
+    "en": "Calculating prices...",
+    "lt": ""
+  },
+  "spinnerLoadingText.nearlyThere": {
+    "en": "Nearly there...",
+    "lt": ""
+  }
+}

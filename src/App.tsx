@@ -24,12 +24,16 @@ function App() {
     importFile,
     updateTranslation,
     addKey,
+    removeKey,
+    addLanguage,
+    removeLanguage,
     setSearch,
     setUntranslatedOnly,
     setSelectedLanguages,
     exportJson,
     getCompletion,
     getVisibleKeys,
+    clearAll,
   } = useTranslationStore()
 
   useEffect(() => {
@@ -61,6 +65,24 @@ function App() {
     URL.revokeObjectURL(url)
   }
 
+  const onDeleteKey = (key: string) => {
+    const confirmed = window.confirm(`Ar tikrai norite istrinti rakta "${key}"?`)
+    if (!confirmed) {
+      return
+    }
+
+    void removeKey(key)
+  }
+
+  const onReset = () => {
+    const confirmed = window.confirm('Ar tikrai norite isvalyti visus duomenis? Bus istrinti ir IndexedDB duomenys.')
+    if (!confirmed) {
+      return
+    }
+
+    void clearAll()
+  }
+
   if (!isReady) {
     return <div className="flex min-h-screen items-center justify-center text-sm text-stone-600">Kraunama...</div>
   }
@@ -86,8 +108,11 @@ function App() {
       <main className="mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-4 px-4 py-4 md:grid-cols-[300px_1fr] md:px-6">
         <LanguageSidebar
           languages={languages}
+          baseLanguage={baseLanguage}
           selected={selectedLanguages}
           onSelect={setSelectedLanguages}
+          onAddLanguage={addLanguage}
+          onRemoveLanguage={removeLanguage}
           getCompletion={getCompletion}
         />
 
@@ -119,6 +144,7 @@ function App() {
             onToggleUntranslated={setUntranslatedOnly}
             onAddKey={onAddKey}
             onExport={onExport}
+            onReset={onReset}
           />
 
           {error ? (
@@ -133,6 +159,7 @@ function App() {
             translations={translations}
             apiKey={apiKey}
             onUpdate={updateTranslation}
+            onDeleteKey={onDeleteKey}
           />
         </section>
       </main>

@@ -32,7 +32,7 @@ describe("translation utils", () => {
     expect(normalized.translations.cart.lt).toBe("");
   });
 
-  it("normalizuoja plural formos objekta kaip vienos kalbos reiksme", () => {
+  it("normalizuoja plural formos objekta kaip nested raktus", () => {
     const normalized = normalizeTranslationPayload({
       financingCalculatorDuration: {
         one: "Duration: {duration} Month",
@@ -42,13 +42,15 @@ describe("translation utils", () => {
     });
 
     expect(normalized.languages).toEqual(["en", "lt"]);
-    expect(normalized.translations.financingCalculatorDuration.en).toBe(
-      JSON.stringify({
-        one: "Duration: {duration} Month",
-        other: "Duration: {duration} Months",
-      }),
+    expect(normalized.translations["financingCalculatorDuration.one"].en).toBe(
+      "Duration: {duration} Month",
     );
-    expect(normalized.translations.financingCalculatorDuration.lt).toBe("");
+    expect(
+      normalized.translations["financingCalculatorDuration.other"].en,
+    ).toBe("Duration: {duration} Months");
+    expect(normalized.translations["financingCalculatorDuration.one"].lt).toBe(
+      "",
+    );
   });
 
   it("normalizuoja nested objekta i taskais atskirtus raktus", () => {
@@ -103,6 +105,28 @@ describe("translation utils", () => {
     expect(badge.total).toBe(2);
   });
 
+  it("skaiciuoja structured JSON kaip neuzpildyta jei truksta bent vieno nested lauko", () => {
+    const badge = calculateCompletion(
+      {
+        monthMilesPlan: {
+          en: JSON.stringify({
+            one: "{months} month / {miles} miles plan",
+            other: "{months} months / {miles} miles plan",
+          }),
+          lt: JSON.stringify({
+            one: "{months} men. / {miles} myliu planas",
+            other: "",
+          }),
+        },
+      },
+      "lt",
+    );
+
+    expect(badge.percent).toBe(0);
+    expect(badge.translated).toBe(0);
+    expect(badge.total).toBe(1);
+  });
+
   it("filtruoja tik neisverstus ir pagal paieska", () => {
     const keys = getFilteredKeys(
       {
@@ -117,6 +141,26 @@ describe("translation utils", () => {
     expect(keys).toEqual(["title"]);
   });
 
+  it("filtruoja structured JSON pagal nested trukstamus laukus", () => {
+    const keys = getFilteredKeys(
+      {
+        monthMilesPlan: {
+          en: JSON.stringify({ one: "One", other: "Other" }),
+          lt: JSON.stringify({ one: "Vienas", other: "" }),
+        },
+        footer: {
+          en: "Footer",
+          lt: "Porašte",
+        },
+      },
+      "",
+      true,
+      "lt",
+    );
+
+    expect(keys).toEqual(["monthMilesPlan"]);
+  });
+
   it("serializuoja atgal i JSON", () => {
     const raw = serializeTranslations({
       hello: { en: "Hello", lt: "Labas" },
@@ -126,28 +170,30 @@ describe("translation utils", () => {
     expect(raw).toContain('"lt"');
   });
 
-  it("serializuojant plural JSON string, grazina objekta", () => {
+  it("serializuojant nested JSON string, grazina objekta", () => {
     const raw = serializeTranslations({
-      monthMilesPlan: {
+      paymentPlan: {
         en: JSON.stringify({
-          one: "{months} month / {miles} miles plan",
-          other: "{months} months / {miles} miles plan",
+          monthly: {
+            one: "{months} month",
+            other: "{months} months",
+          },
         }),
         lt: "",
       },
     });
 
     const parsed = JSON.parse(raw) as {
-      monthMilesPlan: {
-        en: Record<string, string>;
-        lt: string;
+      paymentPlan: {
+        en: { monthly: { one: string; other: string } };
       };
     };
 
-    expect(parsed.monthMilesPlan.en).toEqual({
-      one: "{months} month / {miles} miles plan",
-      other: "{months} months / {miles} miles plan",
+    expect(parsed.paymentPlan.en).toEqual({
+      monthly: {
+        one: "{months} month",
+        other: "{months} months",
+      },
     });
-    expect(parsed.monthMilesPlan.lt).toBe("");
   });
 });

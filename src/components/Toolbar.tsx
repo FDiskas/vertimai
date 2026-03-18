@@ -1,4 +1,4 @@
-import { Download, Plus, Search, X } from 'lucide-react'
+import { Download, Plus, RotateCcw, Search, X } from 'lucide-react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 
@@ -12,6 +12,7 @@ interface ToolbarProps {
   onToggleUntranslated: (value: boolean) => void
   onAddKey: () => void
   onExport: () => void
+  onReset: () => void
 }
 
 export function Toolbar({
@@ -24,6 +25,7 @@ export function Toolbar({
   onToggleUntranslated,
   onAddKey,
   onExport,
+  onReset,
 }: ToolbarProps) {
   return (
     <div className="surface-panel p-4">
@@ -66,10 +68,16 @@ export function Toolbar({
           <Plus className="mr-2 h-4 w-4" />
           Add New Key
         </Button>
-        <Button onClick={onExport}>
-          <Download className="mr-2 h-4 w-4" />
-          Export
-        </Button>
+        <div className="ml-auto flex items-center gap-2">
+          <Button onClick={onExport}>
+            <Download className="mr-2 h-4 w-4" />
+            Export
+          </Button>
+          <Button variant="destructive" onClick={onReset}>
+            <RotateCcw className="mr-2 h-4 w-4" />
+            Reset
+          </Button>
+        </div>
       </div>
     </div>
   )
