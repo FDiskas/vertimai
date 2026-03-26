@@ -140,7 +140,7 @@ export function normalizeTranslationPayload(
   payload: unknown,
 ): NormalizedPayload {
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
-    throw new Error("JSON formatas neteisingas: tikimasi objekto.");
+    throw new Error("Invalid JSON format: expected an object.");
   }
 
   const source = payload as Record<string, unknown>;
@@ -179,13 +179,13 @@ export function normalizeTranslationPayload(
 
     if (!isPlainObject(entry)) {
       throw new Error(
-        `Raktas "${path}" turi būti tekstas, objektas su kalbomis arba nested objektas.`,
+        `Key "${path}" must be text, a language map object, or a nested object.`,
       );
     }
 
     const nestedEntries = Object.entries(entry);
     if (nestedEntries.length === 0) {
-      throw new Error(`Raktas "${path}" negali būti tuščias objektas.`);
+      throw new Error(`Key "${path}" cannot be an empty object.`);
     }
 
     for (const [nestedKey, nestedValue] of nestedEntries) {
@@ -225,11 +225,11 @@ export function addNewTranslationKey(
 ): TranslationMap {
   const trimmed = key.trim();
   if (!trimmed) {
-    throw new Error("Raktas negali būti tuščias.");
+    throw new Error("Key cannot be empty.");
   }
 
   if (current[trimmed]) {
-    throw new Error("Toks raktas jau egzistuoja.");
+    throw new Error("That key already exists.");
   }
 
   const next: TranslationMap = {

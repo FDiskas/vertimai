@@ -104,7 +104,7 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
       });
     } catch {
       set({
-        error: "Nepavyko perskaityti duomenų iš IndexedDB.",
+        error: "Failed to read data from IndexedDB.",
         isReady: true,
       });
     }
@@ -139,7 +139,7 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
     } catch (error) {
       set({
         error:
-          error instanceof Error ? error.message : "Nepavyko įkelti failo.",
+          error instanceof Error ? error.message : "Failed to load file.",
       });
     }
   },
@@ -175,7 +175,7 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
     } catch (error) {
       set({
         error:
-          error instanceof Error ? error.message : "Nepavyko pridėti rakto.",
+          error instanceof Error ? error.message : "Failed to add key.",
       });
     }
   },
@@ -184,7 +184,7 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
     const state = get();
 
     if (!state.translations[key]) {
-      set({ error: "Toks raktas nerastas." });
+      set({ error: "That key was not found." });
       return;
     }
 
@@ -208,17 +208,17 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
     const normalized = language.trim().toLowerCase();
 
     if (!normalized) {
-      set({ error: "Kalbos kodas negali būti tuščias." });
+      set({ error: "Language code cannot be empty." });
       return;
     }
 
     if (!/^[a-z]{2,3}(?:[-_][a-z0-9]{2,8})*$/.test(normalized)) {
-      set({ error: "Neteisingas kalbos kodas. Pvz: lt, en, en-us." });
+      set({ error: "Invalid language code. Example: lt, en, en-us." });
       return;
     }
 
     if (state.languages.includes(normalized)) {
-      set({ error: "Tokia kalba jau pridėta." });
+      set({ error: "This language is already added." });
       return;
     }
 
@@ -250,17 +250,17 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
     const state = get();
 
     if (!state.languages.includes(language)) {
-      set({ error: "Tokios kalbos sąraše nėra." });
+      set({ error: "This language is not in the list." });
       return;
     }
 
     if (language === state.baseLanguage) {
-      set({ error: "Bazinės kalbos ištrinti negalima." });
+      set({ error: "Base language cannot be removed." });
       return;
     }
 
     if (state.languages.length <= 2) {
-      set({ error: "Turi likti bent dvi kalbos split view režimui." });
+      set({ error: "At least two languages must remain for split view mode." });
       return;
     }
 
@@ -315,8 +315,15 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
   },
 
   setApiKey: (value) => {
-    localStorage.setItem(API_KEY_STORAGE_KEY, value);
-    set({ apiKey: value });
+    const normalized = value.trim();
+
+    if (normalized) {
+      localStorage.setItem(API_KEY_STORAGE_KEY, normalized);
+    } else {
+      localStorage.removeItem(API_KEY_STORAGE_KEY);
+    }
+
+    set({ apiKey: normalized });
   },
 
   exportJson: () => {

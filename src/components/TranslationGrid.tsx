@@ -2,6 +2,7 @@ import { Check, Copy, Sparkles, Trash2 } from 'lucide-react'
 import { Fragment, useState } from 'react'
 import { useOpenAITranslate } from '../hooks/useOpenAITranslate'
 import { parseStructuredTranslationValue } from '../lib/translation-utils'
+import { useTranslationStore } from '../store/useTranslationStore'
 import translateTemplateSource from '../templates/translate-template.ts?raw'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -9,11 +10,8 @@ import { Textarea } from './ui/textarea'
 
 interface TranslationGridProps {
   baseLanguage: string
-  leftLanguage: string
-  rightLanguage: string
   visibleKeys: string[]
   translations: Record<string, Record<string, string>>
-  apiKey: string
   onUpdate: (key: string, language: string, value: string) => Promise<void>
   onDeleteKey: (key: string) => void
 }
@@ -119,17 +117,22 @@ function getStructuredProgress(structured: StructuredValue): { filled: number; t
 
 export function TranslationGrid({
   baseLanguage,
-  leftLanguage,
-  rightLanguage,
   visibleKeys,
   translations,
-  apiKey,
   onUpdate,
   onDeleteKey,
 }: TranslationGridProps) {
+  const apiKey = useTranslationStore((state) => state.apiKey)
+  const allLanguages = useTranslationStore((state) => state.languages)
   const { translate, isTranslating, error: translateError } = useOpenAITranslate()
   const [activeCell, setActiveCell] = useState<string | null>(null)
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
+
+  const nonBaseLanguages = allLanguages.filter(
+    (language, index, list) => language !== baseLanguage && list.indexOf(language) === index,
+  )
+  const fallbackLanguage = allLanguages.find((language) => language !== baseLanguage) ?? baseLanguage
+  const comparisonLanguages = nonBaseLanguages.length > 0 ? nonBaseLanguages : [fallbackLanguage]
 
   if (visibleKeys.length === 0) {
     return (
@@ -137,7 +140,7 @@ export function TranslationGrid({
         <div className="border-b border-stone-200 px-4 py-3">
           <h3 className="text-sm font-semibold text-stone-900">lib/translate.ts</h3>
           <p className="mt-1 text-xs text-stone-600">
-            Pavyzdys kaip panaudoti vertimų JSON failą
+            Example of how to use the translations JSON file
           </p>
         </div>
         <pre className="max-h-[340px] overflow-auto bg-stone-950 px-4 py-3 text-xs leading-relaxed text-stone-100">
@@ -160,8 +163,9 @@ export function TranslationGrid({
         apiKey,
       })
       await onUpdate(key, language, translated)
-    } catch {
+    } catch (error) {
       // Error state is surfaced from the hook.
+      throw new Error(error instanceof Error ? error.message : 'Unknown error')
     } finally {
       setActiveCell(null)
     }
@@ -220,9 +224,9 @@ export function TranslationGrid({
   return (
     <div className="surface-panel overflow-hidden">
       <div className="flex items-center justify-between border-b border-stone-200 px-4 py-2 text-xs text-stone-600">
-        <p className="font-medium">Lenteleje matote tik aktyvius filtravimo rezultatus.</p>
+        <p className="font-medium">The table only shows active filtered results.</p>
         <p>
-          Bazinis: <span className="font-semibold text-stone-800">{baseLanguage}</span>
+          Main language: <span className="font-semibold text-stone-800">{baseLanguage}</span>
         </p>
       </div>
       {translateError ? (
@@ -233,8 +237,11 @@ export function TranslationGrid({
           <thead className="sticky top-0 z-10 bg-stone-100/95 backdrop-blur">
           <tr>
             <th className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">Original ({baseLanguage})</th>
-            <th className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">Split Left ({leftLanguage})</th>
-            <th className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">Split Right ({rightLanguage})</th>
+            {comparisonLanguages.map((language) => (
+              <th key={`header-${language}`} className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">
+                {`Translation (${language})`}
+              </th>
+            ))}
           </tr>
           </thead>
           <tbody>
@@ -246,7 +253,7 @@ export function TranslationGrid({
               return (
                 <Fragment key={key}>
                   <tr className="bg-[#fff9ea]">
-                    <td colSpan={3} className="px-3 py-2">
+                    <td colSpan={1 + comparisonLanguages.length} className="px-3 py-2">
                       <div className="flex items-center gap-2">
                         <Input
                           readOnly
@@ -304,7 +311,7 @@ export function TranslationGrid({
                         />
                       )}
                     </td>
-                    {[leftLanguage, rightLanguage].map((language) => {
+                    {comparisonLanguages.map((language) => {
                       const cellId = `${key}:${language}`
                       const structured = getStructuredForLanguage(baseRaw, entry[language] ?? '')
                       const progress = structured ? getStructuredProgress(structured) : null
@@ -343,11 +350,13 @@ export function TranslationGrid({
                               <Button
                                 variant="secondary"
                                 size="sm"
-                                onClick={() => void (structured ? translateStructuredCell(key, language) : translateCell(key, language))}
-                                disabled={isTranslating && activeCell !== cellId}
+                                onClick={() => {
+                                  return void (structured ? translateStructuredCell(key, language) : translateCell(key, language))
+                                }}
+                                disabled={!apiKey.trim() || (isTranslating && activeCell !== cellId)}
                               >
                                 <Sparkles className="mr-2 h-3.5 w-3.5" />
-                                {activeCell === cellId ? 'Verciama...' : 'AI Translate'}
+                                {activeCell === cellId ? 'Translating...' : 'AI Translate'}
                               </Button>
                             </div>
                           </div>

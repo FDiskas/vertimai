@@ -31,11 +31,11 @@ export function Toolbar({
     <div className="surface-panel p-4">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">Darbo failas</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">Working file</p>
           <p className="text-sm font-medium text-stone-800">{fileName}</p>
         </div>
         <span className="label-chip">
-          Rodoma {visibleCount} / {totalCount}
+          Showing {visibleCount} / {totalCount}
         </span>
       </div>
 
@@ -43,7 +43,7 @@ export function Toolbar({
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
         <Input
           className="pl-9 pr-9"
-          placeholder="Paieska pagal rakta ar reiksme..."
+          placeholder="Search by key or value..."
           value={search}
           onChange={(event) => onSearch(event.target.value)}
         />
@@ -52,7 +52,7 @@ export function Toolbar({
             type="button"
             onClick={() => onSearch('')}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-stone-400 transition hover:bg-stone-100 hover:text-stone-700"
-            aria-label="Isvalyti paieska"
+            aria-label="Clear search"
           >
             <X className="h-4 w-4" />
           </button>
@@ -62,7 +62,7 @@ export function Toolbar({
       <div className="flex flex-wrap items-center gap-2">
         <label className="inline-flex items-center gap-2 rounded-md border border-stone-200 bg-white px-3 py-2 text-sm text-stone-700">
           <input type="checkbox" checked={untranslatedOnly} onChange={(event) => onToggleUntranslated(event.target.checked)} />
-          Tik neisversti
+          Untranslated only
         </label>
         <Button variant="secondary" onClick={onAddKey}>
           <Plus className="mr-2 h-4 w-4" />

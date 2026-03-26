@@ -49,8 +49,8 @@ export function UploadZone({ onFileLoaded }: UploadZoneProps) {
             <Upload className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-stone-900">Ikelkite vertimu JSON faila</p>
-            <p className="text-xs text-stone-600">Drag-and-drop arba pasirinkite faila rankiniu budu.</p>
+            <p className="text-sm font-semibold text-stone-900">Upload a translations JSON file</p>
+            <p className="text-xs text-stone-600">Drag and drop or choose a file manually.</p>
           </div>
         </div>
         <Button variant="secondary" onClick={() => inputRef.current?.click()}>

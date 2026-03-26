@@ -86,7 +86,7 @@ export function useOpenAITranslate(): UseOpenAITranslateResult {
       apiKey,
     }: TranslateParams) => {
       if (!apiKey.trim()) {
-        throw new Error("Pirmiausia įveskite OPENAI_API_KEY nustatymuose.");
+        throw new Error("Please enter OPENAI_API_KEY in settings first.");
       }
 
       if (!text.trim()) {
@@ -121,7 +121,7 @@ export function useOpenAITranslate(): UseOpenAITranslateResult {
 
         if (!response.ok) {
           throw new Error(
-            "OpenAI užklausa nepavyko. Patikrinkite API raktą ar kvotą.",
+            "OpenAI request failed. Check your API key or quota.",
           );
         }
 
@@ -129,7 +129,7 @@ export function useOpenAITranslate(): UseOpenAITranslateResult {
         const translated = extractTranslatedText(data);
 
         if (!translated) {
-          throw new Error("OpenAI negrąžino vertimo teksto.");
+          throw new Error("OpenAI did not return translated text.");
         }
 
         return translated;
@@ -137,7 +137,7 @@ export function useOpenAITranslate(): UseOpenAITranslateResult {
         const message =
           requestError instanceof Error
             ? requestError.message
-            : "Vertimas nepavyko.";
+            : "Translation failed.";
         setError(message);
         throw new Error(message);
       } finally {

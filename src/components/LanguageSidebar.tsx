@@ -41,12 +41,12 @@ export function LanguageSidebar({
   return (
     <aside className="surface-panel h-fit space-y-4 p-4 md:sticky md:top-[76px]">
       <div>
-        <h2 className="text-base font-semibold text-stone-900">Kalbos</h2>
-        <p className="text-xs text-stone-600">Pasirinkite dvi kalbas split view rezimui.</p>
+        <h2 className="text-base font-semibold text-stone-900">Languages</h2>
+        <p className="text-xs text-stone-600">Select two languages for split view mode.</p>
       </div>
 
       <div className="space-y-2">
-        <label className="block text-xs font-medium uppercase tracking-wide text-stone-500">Kaire</label>
+        <label className="block text-xs font-medium uppercase tracking-wide text-stone-500">Left</label>
         <select
           className="h-10 w-full rounded-md border border-stone-200 bg-white px-3 text-sm"
           value={selected[0]}
@@ -61,7 +61,7 @@ export function LanguageSidebar({
       </div>
 
       <div className="space-y-2">
-        <label className="block text-xs font-medium uppercase tracking-wide text-stone-500">Desine</label>
+        <label className="block text-xs font-medium uppercase tracking-wide text-stone-500">Right</label>
         <select
           className="h-10 w-full rounded-md border border-stone-200 bg-white px-3 text-sm"
           value={selected[1]}
@@ -93,8 +93,8 @@ export function LanguageSidebar({
                     className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-stone-200 bg-white text-stone-500 transition hover:border-rose-200 hover:text-rose-600 disabled:cursor-not-allowed disabled:opacity-50"
                     onClick={() => void onRemoveLanguage(language)}
                     disabled={isBaseLanguage}
-                    title={isBaseLanguage ? 'Bazines kalbos trinti negalima' : `Istrinti ${language}`}
-                    aria-label={isBaseLanguage ? 'Bazines kalbos trinti negalima' : `Istrinti ${language}`}
+                    title={isBaseLanguage ? 'Base language cannot be removed' : `Remove ${language}`}
+                    aria-label={isBaseLanguage ? 'Base language cannot be removed' : `Remove ${language}`}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -110,12 +110,12 @@ export function LanguageSidebar({
 
       <form className="space-y-2 border-t border-stone-200 pt-3" onSubmit={(event) => void submitLanguage(event)}>
         <label htmlFor="new-language" className="block text-xs font-medium uppercase tracking-wide text-stone-500">
-          Prideti kalba
+          Add language
         </label>
         <div className="flex items-center gap-2">
           <Input
             id="new-language"
-            placeholder="pvz. de arba fr"
+            placeholder="for example, de or fr"
             value={newLanguageCode}
             onChange={(event) => setNewLanguageCode(event.target.value)}
           />
