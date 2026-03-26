@@ -6,9 +6,9 @@ export type UiLocale = 'en' | 'lt'
 
 type TranslationParams = Record<string, string | number>
 
-type UiMessages = typeof enUiMessages
+type UiMessageKey = keyof typeof enUiMessages
 
-type UiMessageKey = keyof UiMessages
+type UiMessages = Record<UiMessageKey, string>
 
 interface UiI18nValue {
   locale: UiLocale
