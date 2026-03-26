@@ -138,8 +138,7 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
       );
     } catch (error) {
       set({
-        error:
-          error instanceof Error ? error.message : "Failed to load file.",
+        error: error instanceof Error ? error.message : "Failed to load file.",
       });
     }
   },
@@ -174,8 +173,7 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
       );
     } catch (error) {
       set({
-        error:
-          error instanceof Error ? error.message : "Failed to add key.",
+        error: error instanceof Error ? error.message : "Failed to add key.",
       });
     }
   },

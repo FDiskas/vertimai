@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { useUiI18n } from "../i18n/ui";
 
 interface TranslateParams {
   text: string;
@@ -75,6 +76,7 @@ function extractTranslatedText(data: unknown): string | null {
 }
 
 export function useOpenAITranslate(): UseOpenAITranslateResult {
+  const { t } = useUiI18n();
   const [isTranslating, setIsTranslating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -86,7 +88,7 @@ export function useOpenAITranslate(): UseOpenAITranslateResult {
       apiKey,
     }: TranslateParams) => {
       if (!apiKey.trim()) {
-        throw new Error("Please enter OPENAI_API_KEY in settings first.");
+        throw new Error(t("openai.error.missingApiKey"));
       }
 
       if (!text.trim()) {
@@ -120,16 +122,14 @@ export function useOpenAITranslate(): UseOpenAITranslateResult {
         });
 
         if (!response.ok) {
-          throw new Error(
-            "OpenAI request failed. Check your API key or quota.",
-          );
+          throw new Error(t("openai.error.requestFailed"));
         }
 
         const data = (await response.json()) as unknown;
         const translated = extractTranslatedText(data);
 
         if (!translated) {
-          throw new Error("OpenAI did not return translated text.");
+          throw new Error(t("openai.error.noTranslatedText"));
         }
 
         return translated;
@@ -137,14 +137,14 @@ export function useOpenAITranslate(): UseOpenAITranslateResult {
         const message =
           requestError instanceof Error
             ? requestError.message
-            : "Translation failed.";
+            : t("openai.error.translationFailed");
         setError(message);
         throw new Error(message);
       } finally {
         setIsTranslating(false);
       }
     },
-    [],
+    [t],
   );
 
   return { isTranslating, error, translate };

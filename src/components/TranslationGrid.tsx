@@ -1,6 +1,7 @@
 import { Check, Copy, Sparkles, Trash2 } from 'lucide-react'
 import { Fragment, useState } from 'react'
 import { useOpenAITranslate } from '../hooks/useOpenAITranslate'
+import { useUiI18n } from '../i18n/ui'
 import { parseStructuredTranslationValue } from '../lib/translation-utils'
 import { useTranslationStore } from '../store/useTranslationStore'
 import translateTemplateSource from '../templates/translate-template.ts?raw'
@@ -122,6 +123,7 @@ export function TranslationGrid({
   onUpdate,
   onDeleteKey,
 }: TranslationGridProps) {
+  const { t } = useUiI18n()
   const apiKey = useTranslationStore((state) => state.apiKey)
   const allLanguages = useTranslationStore((state) => state.languages)
   const { translate, isTranslating, error: translateError } = useOpenAITranslate()
@@ -138,9 +140,9 @@ export function TranslationGrid({
     return (
       <div className="surface-panel overflow-hidden">
         <div className="border-b border-stone-200 px-4 py-3">
-          <h3 className="text-sm font-semibold text-stone-900">lib/translate.ts</h3>
+          <h3 className="text-sm font-semibold text-stone-900">{t('grid.exampleTitle')}</h3>
           <p className="mt-1 text-xs text-stone-600">
-            Example of how to use the translations JSON file
+            {t('grid.exampleDescription')}
           </p>
         </div>
         <pre className="max-h-[340px] overflow-auto bg-stone-950 px-4 py-3 text-xs leading-relaxed text-stone-100">
@@ -224,9 +226,9 @@ export function TranslationGrid({
   return (
     <div className="surface-panel overflow-hidden">
       <div className="flex items-center justify-between border-b border-stone-200 px-4 py-2 text-xs text-stone-600">
-        <p className="font-medium">The table only shows active filtered results.</p>
+        <p className="font-medium">{t('grid.filteredInfo')}</p>
         <p>
-          Main language: <span className="font-semibold text-stone-800">{baseLanguage}</span>
+          {t('grid.mainLanguage')} <span className="font-semibold text-stone-800">{baseLanguage}</span>
         </p>
       </div>
       {translateError ? (
@@ -236,10 +238,10 @@ export function TranslationGrid({
         <table className="min-w-[900px] w-full border-collapse text-sm">
           <thead className="sticky top-0 z-10 bg-stone-100/95 backdrop-blur">
           <tr>
-            <th className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">Original ({baseLanguage})</th>
+            <th className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">{t('grid.original', { language: baseLanguage })}</th>
             {comparisonLanguages.map((language) => (
               <th key={`header-${language}`} className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">
-                {`Translation (${language})`}
+                {t('grid.translation', { language })}
               </th>
             ))}
           </tr>
@@ -260,14 +262,14 @@ export function TranslationGrid({
                           value={key}
                           className="h-8 bg-gray-100/70 font-mono text-xs text-stone-800"
                           onFocus={(event) => event.currentTarget.select()}
-                          aria-label={`Translation key ${key}`}
+                          aria-label={t('grid.translationKeyAria', { key })}
                         />
                         <button
                           type="button"
                           className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-stone-200 bg-white text-stone-600 transition hover:border-stone-300"
                           onClick={() => void copyKey(key)}
-                          aria-label="Copy key"
-                          title="Copy key"
+                          aria-label={t('grid.copyKey')}
+                          title={t('grid.copyKey')}
                         >
                           {copiedKey === key ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
                         </button>
@@ -275,8 +277,8 @@ export function TranslationGrid({
                           type="button"
                           className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-stone-200 bg-white text-stone-600 transition hover:border-rose-200 hover:text-rose-600"
                           onClick={() => onDeleteKey(key)}
-                          aria-label={`Delete key ${key}`}
-                          title="Delete key"
+                          aria-label={t('grid.deleteKey')}
+                          title={t('grid.deleteKey')}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -345,7 +347,11 @@ export function TranslationGrid({
                             )}
                             <div className="flex items-center justify-between gap-2">
                               <span className={`text-[11px] font-medium ${isEmpty ? 'text-amber-700' : 'text-stone-400'}`}>
-                                {progress ? `${progress.filled}/${progress.total} fields` : isEmpty ? 'Missing translation' : `${(entry[language] ?? '').length} chars`}
+                                {progress
+                                  ? t('grid.progressFields', { filled: progress.filled, total: progress.total })
+                                  : isEmpty
+                                    ? t('grid.progressMissing')
+                                    : t('grid.progressChars', { count: (entry[language] ?? '').length })}
                               </span>
                               <Button
                                 variant="secondary"
@@ -356,7 +362,7 @@ export function TranslationGrid({
                                 disabled={!apiKey.trim() || (isTranslating && activeCell !== cellId)}
                               >
                                 <Sparkles className="mr-2 h-3.5 w-3.5" />
-                                {activeCell === cellId ? 'Translating...' : 'AI Translate'}
+                                {activeCell === cellId ? t('grid.translating') : t('grid.aiTranslate')}
                               </Button>
                             </div>
                           </div>

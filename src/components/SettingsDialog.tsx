@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Settings } from 'lucide-react'
+import { useUiI18n } from '../i18n/ui'
 import { useTranslationStore } from '../store/useTranslationStore'
 import { Button } from './ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
 import { Input } from './ui/input'
 
 export function SettingsDialog() {
+  const { t } = useUiI18n()
   const apiKey = useTranslationStore((state) => state.apiKey)
   const setApiKey = useTranslationStore((state) => state.setApiKey)
   const [open, setOpen] = useState(false)
@@ -20,20 +22,20 @@ export function SettingsDialog() {
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
           <Settings className="mr-2 h-4 w-4" />
-          Settings
+          {t('common.settings')}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Settings</DialogTitle>
+          <DialogTitle>{t('common.settings')}</DialogTitle>
           <DialogDescription>
-            OPENAI_API_KEY from https://platform.openai.com/api-keys
+            {t('settings.apiKeyDescription')}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-stone-700" htmlFor="openai-api-key">
-            OPENAI_API_KEY
+            {t('settings.apiKeyLabel')}
           </label>
           <Input
             id="openai-api-key"
@@ -43,9 +45,9 @@ export function SettingsDialog() {
             onChange={(event) => setDraft(event.target.value)}
           />
           <div className="flex items-center justify-between text-xs text-stone-500">
-            <p>The field is hidden as a password; the key is only visible to you locally.</p>
+            <p>{t('settings.hiddenHint')}</p>
             <span className={`rounded-full px-2 py-1 font-medium ${draft ? 'bg-emerald-50 text-emerald-700' : 'bg-stone-100 text-stone-600'}`}>
-              {draft ? 'Configured' : 'Missing'}
+              {draft ? t('settings.configured') : t('settings.missing')}
             </span>
           </div>
         </div>
@@ -59,7 +61,7 @@ export function SettingsDialog() {
               setOpen(false)
             }}
           >
-            Clear
+            {t('common.clear')}
           </Button>
           <Button
             onClick={() => {
@@ -67,7 +69,7 @@ export function SettingsDialog() {
               setOpen(false)
             }}
           >
-            Save
+            {t('common.save')}
           </Button>
         </div>
       </DialogContent>

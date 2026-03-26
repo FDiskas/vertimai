@@ -25,6 +25,7 @@ import {
   ToastTitle,
   ToastViewport,
 } from './components/ui/toast'
+import { useUiI18n } from './i18n/ui'
 import { useTranslationStore } from './store/useTranslationStore'
 
 type ToastState = {
@@ -35,6 +36,7 @@ type ToastState = {
 }
 
 function App() {
+  const { locale, setLocale, t } = useUiI18n()
   const [showScrollTop, setShowScrollTop] = useState(false)
   const [addKeyOpen, setAddKeyOpen] = useState(false)
   const [deleteKey, setDeleteKey] = useState<string | null>(null)
@@ -108,7 +110,7 @@ function App() {
 
       lastErrorRef.current = nextError
       showToast({
-        title: 'Error',
+        title: t('common.error'),
         description: nextError,
         variant: 'destructive',
       })
@@ -125,7 +127,7 @@ function App() {
     })
 
     return unsubscribe
-  }, [showToast])
+  }, [showToast, t])
 
   const onAddKey = () => {
     setNewKeyDraft('')
@@ -147,8 +149,8 @@ function App() {
 
     if (!normalized) {
       showToast({
-        title: 'Error',
-        description: 'Key cannot be empty.',
+        title: t('common.error'),
+        description: t('app.toast.keyEmpty'),
         variant: 'destructive',
       })
       return
@@ -160,7 +162,7 @@ function App() {
     if (nextError) {
       lastErrorRef.current = nextError
       showToast({
-        title: 'Failed to add key',
+        title: t('app.toast.addKeyFailed'),
         description: nextError,
         variant: 'destructive',
       })
@@ -170,8 +172,8 @@ function App() {
     setAddKeyOpen(false)
     setNewKeyDraft('')
     showToast({
-      title: 'Done',
-      description: `Key "${normalized}" added successfully.`,
+      title: t('common.done'),
+      description: t('app.toast.keyAdded', { key: normalized }),
       variant: 'default',
     })
   }
@@ -195,7 +197,7 @@ function App() {
     if (nextError) {
       lastErrorRef.current = nextError
       showToast({
-        title: 'Failed to delete key',
+        title: t('app.toast.deleteKeyFailed'),
         description: nextError,
         variant: 'destructive',
       })
@@ -203,8 +205,8 @@ function App() {
     }
 
     showToast({
-      title: 'Done',
-      description: `Key "${deleteKey}" deleted.`,
+      title: t('common.done'),
+      description: t('app.toast.keyDeleted', { key: deleteKey }),
       variant: 'default',
     })
     setDeleteKey(null)
@@ -214,8 +216,8 @@ function App() {
     await clearAll()
     setResetOpen(false)
     showToast({
-      title: 'Done',
-      description: 'All data has been cleared.',
+      title: t('common.done'),
+      description: t('app.toast.clearAllDone'),
       variant: 'default',
     })
   }
@@ -225,7 +227,7 @@ function App() {
   }
 
   if (!isReady) {
-    return <div className="flex min-h-screen items-center justify-center text-sm text-stone-600">Loading...</div>
+    return <div className="flex min-h-screen items-center justify-center text-sm text-stone-600">{t('app.loading')}</div>
   }
 
   return (
@@ -233,13 +235,22 @@ function App() {
       <header className="sticky top-0 z-20 border-b border-[#e9ddc6] bg-[#fff9ed]/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-4 px-4 py-3 md:px-6">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-stone-900">Translation Studio</h1>
-            <p className="text-xs text-stone-600">Fast client-side JSON translation editor with AI assistance</p>
+            <h1 className="text-xl font-semibold tracking-tight text-stone-900">{t('app.title')}</h1>
+            <p className="text-xs text-stone-600">{t('app.subtitle')}</p>
           </div>
           <div className="flex items-center gap-2">
+            <select
+              className="h-9 rounded-md border border-stone-200 bg-white px-2 text-sm text-stone-700"
+              value={locale}
+              onChange={(event) => setLocale(event.target.value as 'en' | 'lt')}
+              aria-label="UI language"
+            >
+              <option value="en">English</option>
+              <option value="lt">Lietuviu</option>
+            </select>
             <Button variant="secondary" size="sm" onClick={onExport}>
               <Download className="mr-2 h-4 w-4" />
-              Quick Export
+              {t('app.quickExport')}
             </Button>
             <SettingsDialog />
           </div>
@@ -260,15 +271,15 @@ function App() {
         <section className="space-y-4">
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <div className="metric-card">
-              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">Translation keys</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{t('app.metric.translationKeys')}</p>
               <p className="mt-1 text-2xl font-semibold text-stone-900">{totalKeys}</p>
             </div>
             <div className="metric-card">
-              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">Shown after filter</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{t('app.metric.shownAfterFilter')}</p>
               <p className="mt-1 text-2xl font-semibold text-stone-900">{visibleCount}</p>
             </div>
             <div className="metric-card">
-              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">Untranslated ({selectedLanguages[1]})</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{t('app.metric.untranslated', { language: selectedLanguages[1] })}</p>
               <p className="mt-1 text-2xl font-semibold text-amber-700">{Math.max(untranslatedOnRight, 0)}</p>
             </div>
           </div>
@@ -308,7 +319,7 @@ function App() {
             : 'pointer-events-none translate-y-3 opacity-0'
         }`}
         onClick={onScrollTop}
-        aria-label="Scroll to top"
+        aria-label={t('app.scrollToTop')}
       >
         <ChevronUp className="h-5 w-5" />
       </Button>
@@ -316,22 +327,22 @@ function App() {
       <AlertDialog open={addKeyOpen} onOpenChange={setAddKeyOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Add new key</AlertDialogTitle>
+            <AlertDialogTitle>{t('dialog.addKey.title')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Enter a new translation key (for example, home.title).
+              {t('dialog.addKey.description')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Input
             value={newKeyDraft}
             onChange={(event) => setNewKeyDraft(event.target.value)}
-            placeholder="home.title"
+            placeholder={t('dialog.addKey.placeholder')}
           />
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button variant="secondary">Cancel</Button>
+              <Button variant="secondary">{t('common.cancel')}</Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button onClick={() => void onConfirmAddKey()}>Add</Button>
+              <Button onClick={() => void onConfirmAddKey()}>{t('common.add')}</Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -340,20 +351,20 @@ function App() {
       <AlertDialog open={Boolean(deleteKey)} onOpenChange={(open) => !open && setDeleteKey(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete key?</AlertDialogTitle>
+            <AlertDialogTitle>{t('dialog.deleteKey.title')}</AlertDialogTitle>
             <AlertDialogDescription>
               {deleteKey
-                ? `Are you sure you want to delete key "${deleteKey}"?`
-                : 'Are you sure you want to delete this key?'}
+                ? t('dialog.deleteKey.confirmWithKey', { key: deleteKey })
+                : t('dialog.deleteKey.confirmGeneric')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button variant="secondary">Cancel</Button>
+              <Button variant="secondary">{t('common.cancel')}</Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
               <Button variant="destructive" onClick={() => void onConfirmDeleteKey()}>
-                Delete
+                {t('common.delete')}
               </Button>
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -363,18 +374,18 @@ function App() {
       <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Clear all data?</AlertDialogTitle>
+            <AlertDialogTitle>{t('dialog.clearAll.title')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will remove all imported translations, your API key, and IndexedDB data.
+              {t('dialog.clearAll.description')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button variant="secondary">Cancel</Button>
+              <Button variant="secondary">{t('common.cancel')}</Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
               <Button variant="destructive" onClick={() => void onConfirmReset()}>
-                Clear
+                {t('common.clear')}
               </Button>
             </AlertDialogAction>
           </AlertDialogFooter>
