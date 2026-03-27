@@ -247,7 +247,7 @@ function App() {
 
   return (
     <div className="app-shell flex min-h-screen flex-col">
-      <header className="sticky top-0 z-20 border-b border-[#e9ddc6] bg-[#fff9ed]/95 backdrop-blur">
+      <header className="border-b border-[#e9ddc6] bg-[#fff9ed]/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-4 px-4 py-3 md:px-6">
           <div>
             <h1 className="text-xl font-semibold tracking-tight text-stone-900">{translate.appTitle}</h1>
@@ -263,7 +263,7 @@ function App() {
         <section className="space-y-4">
           {visibleKeys.length === 0 && <UploadZone onFileLoaded={importFile} onLoadDemoData={loadDemoData} />}
 
-          <div className="sticky top-[72px] z-10 md:top-[78px]">
+          <div className="sticky top-0 z-10">
             <Toolbar
               search={search}
               untranslatedOnly={untranslatedOnly}
