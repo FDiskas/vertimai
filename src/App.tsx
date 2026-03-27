@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ChevronUp, Download } from 'lucide-react'
+import { ChevronUp, Download, Github } from 'lucide-react'
 import { LanguageSidebar } from './components/LanguageSidebar'
 import { SettingsDialog } from './components/SettingsDialog'
 import { Toolbar } from './components/Toolbar'
@@ -25,8 +25,8 @@ import {
   ToastTitle,
   ToastViewport,
 } from './components/ui/toast'
-import { useUiI18n } from './i18n/ui'
 import { useTranslationStore } from './store/useTranslationStore'
+import { setTranslateLanguage, translate, withParams } from './templates/translate-template'
 
 type ToastState = {
   open: boolean
@@ -35,8 +35,21 @@ type ToastState = {
   variant: 'default' | 'destructive'
 }
 
+function getInitialUiLanguage(): 'en' | 'lt' {
+  if (typeof window === 'undefined') {
+    return 'en'
+  }
+
+  const stored = window.localStorage.getItem('vertimai-ui-locale')
+  return stored === 'lt' ? 'lt' : 'en'
+}
+
 function App() {
-  const { locale, setLocale, t } = useUiI18n()
+  const [locale, setLocale] = useState<'en' | 'lt'>(() => {
+    const initial = getInitialUiLanguage()
+    setTranslateLanguage(initial)
+    return initial
+  })
   const [showScrollTop, setShowScrollTop] = useState(false)
   const [addKeyOpen, setAddKeyOpen] = useState(false)
   const [deleteKey, setDeleteKey] = useState<string | null>(null)
@@ -61,6 +74,7 @@ function App() {
     isReady,
     initialize,
     importFile,
+    loadDemoData,
     updateTranslation,
     addKey,
     removeKey,
@@ -78,6 +92,12 @@ function App() {
   useEffect(() => {
     void initialize()
   }, [initialize])
+
+  useEffect(() => {
+    window.localStorage.setItem('vertimai-ui-locale', locale)
+  }, [locale])
+
+  setTranslateLanguage(locale)
 
   useEffect(() => {
     const onScroll = () => {
@@ -110,7 +130,7 @@ function App() {
 
       lastErrorRef.current = nextError
       showToast({
-        title: t('common.error'),
+        title: translate.commonError,
         description: nextError,
         variant: 'destructive',
       })
@@ -127,7 +147,7 @@ function App() {
     })
 
     return unsubscribe
-  }, [showToast, t])
+  }, [showToast])
 
   const onAddKey = () => {
     setNewKeyDraft('')
@@ -149,8 +169,8 @@ function App() {
 
     if (!normalized) {
       showToast({
-        title: t('common.error'),
-        description: t('app.toast.keyEmpty'),
+        title: translate.commonError,
+        description: translate.appToastKeyEmpty,
         variant: 'destructive',
       })
       return
@@ -162,7 +182,7 @@ function App() {
     if (nextError) {
       lastErrorRef.current = nextError
       showToast({
-        title: t('app.toast.addKeyFailed'),
+        title: translate.appToastAddKeyFailed,
         description: nextError,
         variant: 'destructive',
       })
@@ -172,8 +192,8 @@ function App() {
     setAddKeyOpen(false)
     setNewKeyDraft('')
     showToast({
-      title: t('common.done'),
-      description: t('app.toast.keyAdded', { key: normalized }),
+      title: translate.commonDone,
+      description: withParams(translate.appToastKeyAdded, { key: normalized }),
       variant: 'default',
     })
   }
@@ -197,7 +217,7 @@ function App() {
     if (nextError) {
       lastErrorRef.current = nextError
       showToast({
-        title: t('app.toast.deleteKeyFailed'),
+        title: translate.appToastDeleteKeyFailed,
         description: nextError,
         variant: 'destructive',
       })
@@ -205,8 +225,8 @@ function App() {
     }
 
     showToast({
-      title: t('common.done'),
-      description: t('app.toast.keyDeleted', { key: deleteKey }),
+      title: translate.commonDone,
+      description: withParams(translate.appToastKeyDeleted, { key: deleteKey }),
       variant: 'default',
     })
     setDeleteKey(null)
@@ -216,8 +236,8 @@ function App() {
     await clearAll()
     setResetOpen(false)
     showToast({
-      title: t('common.done'),
-      description: t('app.toast.clearAllDone'),
+      title: translate.commonDone,
+      description: translate.appToastClearAllDone,
       variant: 'default',
     })
   }
@@ -227,16 +247,16 @@ function App() {
   }
 
   if (!isReady) {
-    return <div className="flex min-h-screen items-center justify-center text-sm text-stone-600">{t('app.loading')}</div>
+    return <div className="flex min-h-screen items-center justify-center text-sm text-stone-600">{translate.appLoading}</div>
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell flex min-h-screen flex-col">
       <header className="sticky top-0 z-20 border-b border-[#e9ddc6] bg-[#fff9ed]/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-4 px-4 py-3 md:px-6">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-stone-900">{t('app.title')}</h1>
-            <p className="text-xs text-stone-600">{t('app.subtitle')}</p>
+            <h1 className="text-xl font-semibold tracking-tight text-stone-900">{translate.appTitle}</h1>
+            <p className="text-xs text-stone-600">{translate.appSubtitle}</p>
           </div>
           <div className="flex items-center gap-2">
             <select
@@ -250,14 +270,14 @@ function App() {
             </select>
             <Button variant="secondary" size="sm" onClick={onExport}>
               <Download className="mr-2 h-4 w-4" />
-              {t('app.quickExport')}
+              {translate.appQuickExport}
             </Button>
             <SettingsDialog />
           </div>
         </div>
       </header>
 
-      <main className="mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-4 px-4 py-4 md:grid-cols-[300px_1fr] md:px-6">
+      <main className="mx-auto grid w-full max-w-[1400px] flex-1 grid-cols-1 gap-4 px-4 py-4 md:grid-cols-[300px_1fr] md:px-6">
         <LanguageSidebar
           languages={languages}
           baseLanguage={baseLanguage}
@@ -271,20 +291,20 @@ function App() {
         <section className="space-y-4">
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <div className="metric-card">
-              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{t('app.metric.translationKeys')}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{translate.appMetricTranslationKeys}</p>
               <p className="mt-1 text-2xl font-semibold text-stone-900">{totalKeys}</p>
             </div>
             <div className="metric-card">
-              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{t('app.metric.shownAfterFilter')}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{translate.appMetricShownAfterFilter}</p>
               <p className="mt-1 text-2xl font-semibold text-stone-900">{visibleCount}</p>
             </div>
             <div className="metric-card">
-              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{t('app.metric.untranslated', { language: selectedLanguages[1] })}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{withParams(translate.appMetricUntranslated, { language: selectedLanguages[1] })}</p>
               <p className="mt-1 text-2xl font-semibold text-amber-700">{Math.max(untranslatedOnRight, 0)}</p>
             </div>
           </div>
 
-          <UploadZone onFileLoaded={importFile} />
+          <UploadZone onFileLoaded={importFile} onLoadDemoData={loadDemoData} />
 
           <div className="sticky top-[72px] z-10 md:top-[78px]">
             <Toolbar
@@ -311,6 +331,20 @@ function App() {
         </section>
       </main>
 
+      <footer className="border-t border-[#e9ddc6] bg-[#fff9ed]/80">
+        <div className="mx-auto w-full max-w-[1400px] px-4 py-3 text-center text-sm text-stone-600 md:px-6">
+          <a
+            href="https://github.com/FDiskas/vertimai"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 font-medium text-stone-700 underline decoration-amber-400 underline-offset-4 hover:text-stone-900"
+          >
+            <Github className="h-4 w-4" aria-hidden="true" />
+            GitHub: FDiskas/vertimai
+          </a>
+        </div>
+      </footer>
+
       <Button
         size="icon"
         className={`fixed bottom-5 right-5 z-30 rounded-full shadow-lg transition-all duration-200 md:bottom-7 md:right-7 ${
@@ -319,7 +353,7 @@ function App() {
             : 'pointer-events-none translate-y-3 opacity-0'
         }`}
         onClick={onScrollTop}
-        aria-label={t('app.scrollToTop')}
+        aria-label={translate.appScrollToTop}
       >
         <ChevronUp className="h-5 w-5" />
       </Button>
@@ -327,22 +361,22 @@ function App() {
       <AlertDialog open={addKeyOpen} onOpenChange={setAddKeyOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('dialog.addKey.title')}</AlertDialogTitle>
+            <AlertDialogTitle>{translate.dialogAddKeyTitle}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t('dialog.addKey.description')}
+              {translate.dialogAddKeyDescription}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Input
             value={newKeyDraft}
             onChange={(event) => setNewKeyDraft(event.target.value)}
-            placeholder={t('dialog.addKey.placeholder')}
+            placeholder={translate.dialogAddKeyPlaceholder}
           />
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button variant="secondary">{t('common.cancel')}</Button>
+              <Button variant="secondary">{translate.commonCancel}</Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button onClick={() => void onConfirmAddKey()}>{t('common.add')}</Button>
+              <Button onClick={() => void onConfirmAddKey()}>{translate.commonAdd}</Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -351,20 +385,20 @@ function App() {
       <AlertDialog open={Boolean(deleteKey)} onOpenChange={(open) => !open && setDeleteKey(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('dialog.deleteKey.title')}</AlertDialogTitle>
+            <AlertDialogTitle>{translate.dialogDeleteKeyTitle}</AlertDialogTitle>
             <AlertDialogDescription>
               {deleteKey
-                ? t('dialog.deleteKey.confirmWithKey', { key: deleteKey })
-                : t('dialog.deleteKey.confirmGeneric')}
+                ? withParams(translate.dialogDeleteKeyConfirmWithKey, { key: deleteKey })
+                : translate.dialogDeleteKeyConfirmGeneric}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button variant="secondary">{t('common.cancel')}</Button>
+              <Button variant="secondary">{translate.commonCancel}</Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
               <Button variant="destructive" onClick={() => void onConfirmDeleteKey()}>
-                {t('common.delete')}
+                {translate.commonDelete}
               </Button>
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -374,18 +408,18 @@ function App() {
       <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('dialog.clearAll.title')}</AlertDialogTitle>
+            <AlertDialogTitle>{translate.dialogClearAllTitle}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t('dialog.clearAll.description')}
+              {translate.dialogClearAllDescription}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button variant="secondary">{t('common.cancel')}</Button>
+              <Button variant="secondary">{translate.commonCancel}</Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
               <Button variant="destructive" onClick={() => void onConfirmReset()}>
-                {t('common.clear')}
+                {translate.commonClear}
               </Button>
             </AlertDialogAction>
           </AlertDialogFooter>

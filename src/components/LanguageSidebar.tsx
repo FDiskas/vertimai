@@ -1,7 +1,7 @@
 import { Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useUiI18n } from '../i18n/ui'
+import { translate, withParams } from '../templates/translate-template'
 import type { LanguageCode } from '../types/translation'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
@@ -26,7 +26,6 @@ export function LanguageSidebar({
   onRemoveLanguage,
   getCompletion,
 }: LanguageSidebarProps) {
-  const { t } = useUiI18n()
   const [newLanguageCode, setNewLanguageCode] = useState('')
 
   const submitLanguage = async (event: FormEvent<HTMLFormElement>) => {
@@ -43,12 +42,12 @@ export function LanguageSidebar({
   return (
     <aside className="surface-panel h-fit space-y-4 p-4 md:sticky md:top-[76px]">
       <div>
-        <h2 className="text-base font-semibold text-stone-900">{t('sidebar.title')}</h2>
-        <p className="text-xs text-stone-600">{t('sidebar.description')}</p>
+        <h2 className="text-base font-semibold text-stone-900">{translate.sidebarTitle}</h2>
+        <p className="text-xs text-stone-600">{translate.sidebarDescription}</p>
       </div>
 
       <div className="space-y-2">
-        <label className="block text-xs font-medium uppercase tracking-wide text-stone-500">{t('sidebar.left')}</label>
+        <label className="block text-xs font-medium uppercase tracking-wide text-stone-500">{translate.sidebarLeft}</label>
         <select
           className="h-10 w-full rounded-md border border-stone-200 bg-white px-3 text-sm"
           value={selected[0]}
@@ -63,7 +62,7 @@ export function LanguageSidebar({
       </div>
 
       <div className="space-y-2">
-        <label className="block text-xs font-medium uppercase tracking-wide text-stone-500">{t('sidebar.right')}</label>
+        <label className="block text-xs font-medium uppercase tracking-wide text-stone-500">{translate.sidebarRight}</label>
         <select
           className="h-10 w-full rounded-md border border-stone-200 bg-white px-3 text-sm"
           value={selected[1]}
@@ -97,13 +96,13 @@ export function LanguageSidebar({
                     disabled={isBaseLanguage}
                     title={
                       isBaseLanguage
-                        ? t('sidebar.baseLanguageCannotBeRemoved')
-                        : t('sidebar.removeLanguage', { language })
+                        ? translate.sidebarBaseLanguageCannotBeRemoved
+                        : withParams(translate.sidebarRemoveLanguage, { language })
                     }
                     aria-label={
                       isBaseLanguage
-                        ? t('sidebar.baseLanguageCannotBeRemoved')
-                        : t('sidebar.removeLanguage', { language })
+                        ? translate.sidebarBaseLanguageCannotBeRemoved
+                        : withParams(translate.sidebarRemoveLanguage, { language })
                     }
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -120,18 +119,18 @@ export function LanguageSidebar({
 
       <form className="space-y-2 border-t border-stone-200 pt-3" onSubmit={(event) => void submitLanguage(event)}>
         <label htmlFor="new-language" className="block text-xs font-medium uppercase tracking-wide text-stone-500">
-          {t('sidebar.addLanguage')}
+          {translate.sidebarAddLanguage}
         </label>
         <div className="flex items-center gap-2">
           <Input
             id="new-language"
-            placeholder={t('sidebar.addLanguagePlaceholder')}
+            placeholder={translate.sidebarAddLanguagePlaceholder}
             value={newLanguageCode}
             onChange={(event) => setNewLanguageCode(event.target.value)}
           />
           <Button type="submit" variant="secondary" size="sm" className="shrink-0">
             <Plus className="mr-2 h-3.5 w-3.5" />
-            {t('common.add')}
+            {translate.commonAdd}
           </Button>
         </div>
       </form>

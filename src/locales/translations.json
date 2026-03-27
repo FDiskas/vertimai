@@ -1,0 +1,294 @@
+{
+  "commonAdd": {
+    "en": "Add",
+    "lt": "Pridėti"
+  },
+  "commonCancel": {
+    "en": "Cancel",
+    "lt": "Atsaukti"
+  },
+  "commonClear": {
+    "en": "Clear",
+    "lt": "Išvalyti"
+  },
+  "commonDelete": {
+    "en": "Delete",
+    "lt": "Ištrinti"
+  },
+  "commonDone": {
+    "en": "Done",
+    "lt": "Atlikta"
+  },
+  "commonError": {
+    "en": "Error",
+    "lt": "Klaida"
+  },
+  "commonExport": {
+    "en": "Export",
+    "lt": "Eksportuoti"
+  },
+  "commonReset": {
+    "en": "Reset",
+    "lt": "Atstatyti"
+  },
+  "commonSave": {
+    "en": "Save",
+    "lt": "Išsaugoti"
+  },
+  "commonSettings": {
+    "en": "Settings",
+    "lt": "Nustatymai"
+  },
+  "appLoading": {
+    "en": "Loading...",
+    "lt": "Kraunama..."
+  },
+  "appTitle": {
+    "en": "Translation Studio",
+    "lt": "Vertimų Studija"
+  },
+  "appSubtitle": {
+    "en": "Fast client-side JSON translation editor with AI assistance",
+    "lt": "Greitas kliento pusėje veikiantis JSON vertimų redaktorius su AI pagalba"
+  },
+  "appQuickExport": {
+    "en": "Quick Export",
+    "lt": "Greitas eksportas"
+  },
+  "appMetricTranslationKeys": {
+    "en": "Translation keys",
+    "lt": "Vertimo raktai"
+  },
+  "appMetricShownAfterFilter": {
+    "en": "Shown after filter",
+    "lt": "Rodoma po filtro"
+  },
+  "appMetricUntranslated": {
+    "en": "Untranslated ({language})",
+    "lt": "Neversta ({language})"
+  },
+  "appScrollToTop": {
+    "en": "Scroll to top",
+    "lt": "Slinkti į viršų"
+  },
+  "appToastKeyAdded": {
+    "en": "Key \"{key}\" added successfully.",
+    "lt": "Raktas \"{key}\" sėkmingai pridėtas."
+  },
+  "appToastKeyDeleted": {
+    "en": "Key \"{key}\" deleted.",
+    "lt": "Raktas \"{key}\" ištrintas."
+  },
+  "appToastAddKeyFailed": {
+    "en": "Failed to add key",
+    "lt": "Nepavyko pridėti rakto"
+  },
+  "appToastDeleteKeyFailed": {
+    "en": "Failed to delete key",
+    "lt": "Nepavyko ištrinti rakto"
+  },
+  "appToastClearAllDone": {
+    "en": "All data has been cleared.",
+    "lt": "Visi duomenys išvalyti."
+  },
+  "appToastKeyEmpty": {
+    "en": "Key cannot be empty.",
+    "lt": "Raktas negali būti tuščias."
+  },
+  "dialogAddKeyTitle": {
+    "en": "Add new key",
+    "lt": "Pridėti naują raktą"
+  },
+  "dialogAddKeyDescription": {
+    "en": "Enter a new translation key (for example, home.title).",
+    "lt": "Įveskite naują vertimo raktą (pvz., home.title)."
+  },
+  "dialogAddKeyPlaceholder": {
+    "en": "home.title",
+    "lt": "home.title"
+  },
+  "dialogDeleteKeyTitle": {
+    "en": "Delete key?",
+    "lt": "Ištrinti raktą?"
+  },
+  "dialogDeleteKeyConfirmWithKey": {
+    "en": "Are you sure you want to delete key \"{key}\"?",
+    "lt": "Ar tikrai norite ištrinti raktą \"{key}\"?"
+  },
+  "dialogDeleteKeyConfirmGeneric": {
+    "en": "Are you sure you want to delete this key?",
+    "lt": "Ar tikrai norite ištrinti šį raktą?"
+  },
+  "dialogClearAllTitle": {
+    "en": "Clear all data?",
+    "lt": "Išvalyti visus duomenis?"
+  },
+  "dialogClearAllDescription": {
+    "en": "This will remove all imported translations, your API key, and IndexedDB data.",
+    "lt": "Tai pašalins visus importuotus vertimus, API raktą ir IndexedDB duomenis."
+  },
+  "sidebarTitle": {
+    "en": "Languages",
+    "lt": "Kalbos"
+  },
+  "sidebarDescription": {
+    "en": "Select two languages for split view mode.",
+    "lt": "Padalinto vaizdo režimui pasirinkite dvi kalbas."
+  },
+  "sidebarLeft": {
+    "en": "Left",
+    "lt": "Kairė"
+  },
+  "sidebarRight": {
+    "en": "Right",
+    "lt": "Dešinė"
+  },
+  "sidebarAddLanguage": {
+    "en": "Add language",
+    "lt": "Pridėti kalbą"
+  },
+  "sidebarAddLanguagePlaceholder": {
+    "en": "for example, de or fr",
+    "lt": "pvz., de arba fr"
+  },
+  "sidebarBaseLanguageCannotBeRemoved": {
+    "en": "Base language cannot be removed",
+    "lt": "Pagrindinės kalbos pašalinti negalima"
+  },
+  "sidebarRemoveLanguage": {
+    "en": "Remove {language}",
+    "lt": "Pašalinti {language}"
+  },
+  "toolbarWorkingFile": {
+    "en": "Working file",
+    "lt": "Darbinis failas"
+  },
+  "toolbarShowing": {
+    "en": "Showing {visible} / {total}",
+    "lt": "Rodoma {visible} / {total}"
+  },
+  "toolbarSearchPlaceholder": {
+    "en": "Search by key or value...",
+    "lt": "Ieskoti pagal rakta arba reiksme..."
+  },
+  "toolbarClearSearch": {
+    "en": "Clear search",
+    "lt": "Isvalyti paieska"
+  },
+  "toolbarUntranslatedOnly": {
+    "en": "Untranslated only",
+    "lt": "Tik neisverstos"
+  },
+  "toolbarAddNewKey": {
+    "en": "Add New Key",
+    "lt": "Prideti nauja rakta"
+  },
+  "uploadTitle": {
+    "en": "Upload a translations JSON file",
+    "lt": "Ikelkite vertimu JSON faila"
+  },
+  "uploadDescription": {
+    "en": "Drag and drop or choose a file manually.",
+    "lt": "Nutempkite faila arba pasirinkite rankiniu budu."
+  },
+  "uploadButton": {
+    "en": "Upload",
+    "lt": "Ikelti"
+  },
+  "uploadLoadDemoButton": {
+    "en": "Demo data",
+    "lt": "Demo"
+  },
+  "settingsApiKeyDescription": {
+    "en": "Specify your OPENAI API KEY. Can be obtained from https://platform.openai.com/api-keys",
+    "lt": "Nurodykite savo OPENAI API RAKTĄ. Jį galite gauti iš https://platform.openai.com/api-keys"
+  },
+  "settingsApiKeyLabel": {
+    "en": "OPENAI_API_KEY",
+    "lt": "OPENAI_API_KEY"
+  },
+  "settingsHiddenHint": {
+    "en": "The key is not shared and stored in a browser only.",
+    "lt": "Raktas nėra dalijamas ir saugomas tik naršyklėje."
+  },
+  "settingsConfigured": {
+    "en": "Configured",
+    "lt": "Sukonfiguruota"
+  },
+  "settingsMissing": {
+    "en": "Missing",
+    "lt": "Nera"
+  },
+  "gridExampleTitle": {
+    "en": "lib/translate.ts",
+    "lt": "lib/translate.ts"
+  },
+  "gridExampleDescription": {
+    "en": "Example of how to use the translations JSON file",
+    "lt": "Pavyzdys, kaip naudoti vertimu JSON faila"
+  },
+  "gridFilteredInfo": {
+    "en": "The table only shows active filtered results.",
+    "lt": "Lentele rodo tik aktyvius filtruotus rezultatus."
+  },
+  "gridMainLanguage": {
+    "en": "Main language:",
+    "lt": "Pagrindine kalba:"
+  },
+  "gridOriginal": {
+    "en": "Original ({language})",
+    "lt": "Originalas ({language})"
+  },
+  "gridTranslation": {
+    "en": "Translation ({language})",
+    "lt": "Vertimas ({language})"
+  },
+  "gridTranslationKeyAria": {
+    "en": "Translation key {key}",
+    "lt": "Vertimo raktas {key}"
+  },
+  "gridCopyKey": {
+    "en": "Copy key",
+    "lt": "Kopijuoti rakta"
+  },
+  "gridDeleteKey": {
+    "en": "Delete key",
+    "lt": "Istrinti rakta"
+  },
+  "gridProgressFields": {
+    "en": "{filled}/{total} fields",
+    "lt": "{filled}/{total} laukai"
+  },
+  "gridProgressMissing": {
+    "en": "Missing translation",
+    "lt": "Truksta vertimo"
+  },
+  "gridProgressChars": {
+    "en": "{count} chars",
+    "lt": "{count} simb."
+  },
+  "gridAiTranslate": {
+    "en": "AI Translate",
+    "lt": "AI versti"
+  },
+  "gridTranslating": {
+    "en": "Translating...",
+    "lt": "Verciama..."
+  },
+  "openaiErrorMissingApiKey": {
+    "en": "Please enter OPENAI_API_KEY in settings first.",
+    "lt": "Pirmiausia nustatymuose iveskite OPENAI_API_KEY."
+  },
+  "openaiErrorRequestFailed": {
+    "en": "OpenAI request failed. Check your API key or quota.",
+    "lt": "OpenAI uzklausa nepavyko. Patikrinkite API rakta arba limita."
+  },
+  "openaiErrorNoTranslatedText": {
+    "en": "OpenAI did not return translated text.",
+    "lt": "OpenAI negrazino isversto teksto."
+  },
+  "openaiErrorTranslationFailed": {
+    "en": "Translation failed.",
+    "lt": "Vertimas nepavyko."
+  }
+}

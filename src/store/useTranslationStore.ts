@@ -12,6 +12,7 @@ import {
   loadPersistedData,
   savePersistedData,
 } from "../lib/storage";
+import demoTranslations from "../locales/translations.json";
 import type {
   CompletionBadge,
   LanguageCode,
@@ -33,6 +34,7 @@ interface TranslationState {
   error: string | null;
   initialize: () => Promise<void>;
   importFile: (fileName: string, rawJson: string) => Promise<void>;
+  loadDemoData: () => Promise<void>;
   updateTranslation: (
     key: string,
     language: LanguageCode,
@@ -139,6 +141,41 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : "Failed to load file.",
+      });
+    }
+  },
+
+  loadDemoData: async () => {
+    try {
+      const normalized = normalizeTranslationPayload(demoTranslations);
+      const baseLanguage = normalized.languages.includes("en")
+        ? "en"
+        : normalized.languages[0];
+      const secondLanguage =
+        normalized.languages.find((language) => language !== baseLanguage) ??
+        baseLanguage;
+
+      set({
+        fileName: "demo-translations.json",
+        translations: normalized.translations,
+        languages: normalized.languages,
+        baseLanguage,
+        selectedLanguages: [baseLanguage, secondLanguage],
+        error: null,
+      });
+
+      await persistSnapshot(
+        "demo-translations.json",
+        normalized.translations,
+        normalized.languages,
+        baseLanguage,
+      );
+    } catch (error) {
+      set({
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to load demo data.",
       });
     }
   },

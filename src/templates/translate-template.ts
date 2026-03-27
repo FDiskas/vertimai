@@ -1,18 +1,13 @@
-import translations from "../locales/en.json";
-import allTranslations from "../mocks/exported.json";
+import translations from "../locales/translations.json";
 
-type SourceTranslations = typeof allTranslations;
-type TranslationsType = typeof translations;
-type Key = keyof TranslationsType;
-export type LanguageCode = keyof SourceTranslations[Key];
+export type LanguageCode = keyof (typeof translations)[keyof typeof translations];
 type PluralValue = { one: string; other: string };
-type PluralKeys = {
-  [K in keyof TranslationsType]: TranslationsType[K] extends PluralValue
-    ? K
-    : never;
-}[Key];
-type Translate = Omit<TranslationsType, PluralKeys> &
-  Record<PluralKeys, (count: number) => string>;
+type Translate = {
+  [K in keyof typeof translations]: (typeof translations)[K][typeof DEFAULT_LANGUAGE] extends PluralValue
+    ? (count: number) => string
+    : string;
+};
+type TranslationParams = Record<string, string | number>;
 
 const DEFAULT_LANGUAGE = "en" as const;
 
@@ -28,14 +23,14 @@ function isPlural(value: unknown): value is PluralValue {
 }
 
 function createTranslationHelper(language: LanguageCode): Translate {
-  const result = { ...translations } as unknown as Record<
-    Key,
+  const result = {} as Record<
+    keyof typeof translations,
     string | ((count: number) => string)
   >;
 
-  for (const key of Object.keys(allTranslations) as Key[]) {
-    const baseValue = allTranslations[key]?.[DEFAULT_LANGUAGE];
-    const value = allTranslations[key]?.[language];
+  for (const key of Object.keys(translations) as (keyof typeof translations)[]) {
+    const baseValue = translations[key]?.[DEFAULT_LANGUAGE];
+    const value = translations[key]?.[language];
 
     if (isPlural(baseValue)) {
       result[key] = (count: number) => {
@@ -51,11 +46,25 @@ function createTranslationHelper(language: LanguageCode): Translate {
     result[key] = typeof value === "string" ? value : "";
   }
 
-  return result as Translate;
+  return result as unknown as Translate;
 }
 
 export const translate = createTranslationHelper(DEFAULT_LANGUAGE);
 
 export function setTranslateLanguage(language: LanguageCode): void {
   Object.assign(translate, createTranslationHelper(language));
+}
+
+export function withParams(
+  template: string,
+  params?: TranslationParams,
+): string {
+  if (!params) {
+    return template;
+  }
+
+  return template.replace(/\{(\w+)\}/g, (_match, token: string) => {
+    const value = params[token];
+    return value === undefined ? `{${token}}` : String(value);
+  });
 }

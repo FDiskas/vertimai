@@ -1,40 +1,38 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { translate, setTranslateLanguage } from "./translate-template";
+import { translate, setTranslateLanguage, withParams } from "./translate-template";
 
 describe("translate", () => {
   beforeEach(() => {
     setTranslateLanguage("en");
   });
 
-  it("grazina paprasta teksta", () => {
-    expect(translate.copyUrl).toBe("Copy url to clipboard");
+  it("return simple text", () => {
+    expect(translate.commonAdd).toBe("Add");
   });
 
-  it("grazina kita paprasta teksta", () => {
-    expect(translate.orderSummary).toBe("Order summary");
+  it("return another simple text", () => {
+    expect(translate.appTitle).toBe("Translation Studio");
   });
 
-  it("sukuria funkcija plural reiksmems ir parenka one/other", () => {
-    expect(typeof translate.monthMilesPlan).toBe("function");
-    expect(translate.monthMilesPlan(1)).toBe(
-      "{months} month / {miles} miles plan",
-    );
-    expect(translate.monthMilesPlan(2)).toBe(
-      "{months} months / {miles} miles plan",
-    );
-  });
-
-  it("leidzia pakeisti kalba ir gauti kitos kalbos verte", () => {
+  it("allows changing the language and getting the value in another language", () => {
     setTranslateLanguage("lt");
 
-    expect(translate.copyUrl).toBe("Nukopijuoti nuorodą į iškarpinę");
+    expect(translate.commonAdd).toBe("Pridėti");
   });
 
-  it("plural laukui be vertimo kitoje kalboje grazina tuscia string", () => {
+  it("returns an empty string for a non-existing key", () => {
     setTranslateLanguage("lt");
 
-    expect(typeof translate.monthMilesPlan).toBe("function");
-    expect(translate.monthMilesPlan(2)).toBe("");
+    expect((translate as Record<string, string>).nonExistingKey).toBeUndefined();
+  });
+
+  it("replaces known params and keeps missing ones in the template", () => {
+    const result = withParams("Hello {name}, id: {id}, missing: {missing}", {
+      name: "Jon",
+      id: 42,
+    });
+
+    expect(result).toBe("Hello Jon, id: 42, missing: {missing}");
   });
 });

@@ -1,14 +1,14 @@
 import { useRef, useState } from 'react'
 import { Upload } from 'lucide-react'
-import { useUiI18n } from '../i18n/ui'
+import { translate } from '../templates/translate-template'
 import { Button } from './ui/button'
 
 interface UploadZoneProps {
   onFileLoaded: (fileName: string, content: string) => Promise<void>
+  onLoadDemoData: () => Promise<void>
 }
 
-export function UploadZone({ onFileLoaded }: UploadZoneProps) {
-  const { t } = useUiI18n()
+export function UploadZone({ onFileLoaded, onLoadDemoData }: UploadZoneProps) {
   const [isOver, setIsOver] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
 
@@ -51,14 +51,19 @@ export function UploadZone({ onFileLoaded }: UploadZoneProps) {
             <Upload className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-stone-900">{t('upload.title')}</p>
-            <p className="text-xs text-stone-600">{t('upload.description')}</p>
+            <p className="text-sm font-semibold text-stone-900">{translate.uploadTitle}</p>
+            <p className="text-xs text-stone-600">{translate.uploadDescription}</p>
           </div>
         </div>
-        <Button variant="secondary" onClick={() => inputRef.current?.click()}>
-          <Upload className="mr-2 h-4 w-4" />
-          {t('upload.button')}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="secondary" onClick={() => inputRef.current?.click()}>
+            <Upload className="mr-2 h-4 w-4" />
+            {translate.uploadButton}
+          </Button>
+          <Button variant="ghost" onClick={() => void onLoadDemoData()}>
+            {translate.uploadLoadDemoButton}
+          </Button>
+        </div>
       </div>
     </div>
   )
