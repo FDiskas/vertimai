@@ -212,8 +212,8 @@
     "lt": "Pavyzdys, kaip naudoti vertimų JSON failą"
   },
   "gridMainLanguage": {
-    "en": "Main language:",
-    "lt": "Pagrindine kalba:"
+    "en": "Main language ({language})",
+    "lt": "Pagrindine kalba ({language})"
   },
   "gridOriginal": {
     "en": "Original ({language})",

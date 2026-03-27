@@ -306,19 +306,8 @@ export function TranslationGrid({
             </DialogContent>
           </Dialog>
 
-          {allLanguages.map((language) => {
-            const completion = getCompletion(language)
-            return (
-              <Badge key={language} className={language === baseLanguage ? 'bg-amber-100 text-amber-800 border-amber-200' : ''}>
-                {language} {completion.percent}%
-              </Badge>
-            )
-          })}
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <p className="shrink-0 text-stone-500">
-            {translate.gridMainLanguage} <span className="font-semibold text-stone-700">{baseLanguage}</span>
-          </p>
           {/* Split view modal */}
           <Dialog>
             <DialogTrigger asChild>
@@ -366,7 +355,7 @@ export function TranslationGrid({
      </div>
       <div className="text-sm">
         <div className="sticky top-0 z-10 hidden sm:grid sm:grid-cols-2 bg-stone-100/95 backdrop-blur border-b border-stone-200">
-          <div className="px-3 py-3 font-semibold text-stone-700">{withParams(translate.gridOriginal, { language: baseLanguage })}</div>
+          <div className="px-3 py-3 font-semibold text-stone-700">{withParams(translate.gridMainLanguage, { language: baseLanguage })}</div>
           {comparisonLanguages.map((language) => (
             <div key={`header-${language}`} className="px-3 py-3 font-semibold text-stone-700">
               {withParams(translate.gridTranslation, { language })}
@@ -413,7 +402,7 @@ export function TranslationGrid({
               <div className="grid grid-cols-1 sm:grid-cols-2 border-b border-stone-100 bg-white hover:bg-[#fff9ea]">
                 <div className="px-3 py-3 sm:border-r sm:border-stone-100">
                   <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-500 sm:hidden">
-                    {withParams(translate.gridOriginal, { language: baseLanguage })}
+                    {withParams(translate.gridMainLanguage, { language: baseLanguage })}
                   </p>
                   {baseStructured ? (
                     <div className="space-y-2">
