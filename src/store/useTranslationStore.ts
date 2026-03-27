@@ -393,7 +393,7 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
       selectedLanguages: ["en", "lt"],
       search: "",
       untranslatedOnly: false,
-      apiKey: "",
+      // apiKey: "",
       error: null,
     });
   },

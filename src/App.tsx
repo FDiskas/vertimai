@@ -26,6 +26,7 @@ import {
 } from './components/ui/toast'
 import { useTranslationStore } from './store/useTranslationStore'
 import { setTranslateLanguage, translate, withParams } from './templates/translate-template'
+import { useHotkey } from '@tanstack/react-hotkeys'
 
 type ToastState = {
   open: boolean
@@ -61,7 +62,6 @@ function App() {
     variant: 'default',
   })
   const lastErrorRef = useRef<string | null>(null)
-
   const {
     fileName,
     translations,
@@ -236,6 +236,11 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  useHotkey('Control+Enter', onConfirmAddKey, { enabled: addKeyOpen })
+  useHotkey('Control+Enter', onConfirmDeleteKey, { enabled: !!deleteKey })
+  useHotkey('Control+Enter', onConfirmReset, { enabled: resetOpen })
+  
+
   if (!isReady) {
     return <div className="flex min-h-screen items-center justify-center text-sm text-stone-600">{translate.appLoading}</div>
   }
@@ -349,7 +354,7 @@ function App() {
               <Button variant="secondary">{translate.commonCancel}</Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button onClick={() => void onConfirmAddKey()}>{translate.commonAdd}</Button>
+              <Button onClick={onConfirmAddKey} title="Save new key (Ctrl+Enter)">{translate.commonAdd}</Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -370,7 +375,7 @@ function App() {
               <Button variant="secondary">{translate.commonCancel}</Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button variant="destructive" onClick={() => void onConfirmDeleteKey()}>
+              <Button variant="destructive" onClick={onConfirmDeleteKey} title="Delete key (Ctrl+Enter)">
                 {translate.commonDelete}
               </Button>
             </AlertDialogAction>
@@ -391,7 +396,7 @@ function App() {
               <Button variant="secondary">{translate.commonCancel}</Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button variant="destructive" onClick={() => void onConfirmReset()}>
+              <Button variant="destructive" onClick={onConfirmReset} title="Clear all (Ctrl+Enter)">
                 {translate.commonClear}
               </Button>
             </AlertDialogAction>

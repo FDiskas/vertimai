@@ -108,8 +108,8 @@
     "lt": "Išvalyti visus duomenis?"
   },
   "dialogClearAllDescription": {
-    "en": "This will remove all imported translations, your API key, and IndexedDB data.",
-    "lt": "Tai pašalins visus importuotus vertimus, API raktą ir IndexedDB duomenis."
+    "en": "This will remove all imported translations and IndexedDB data.",
+    "lt": "Tai pašalins visus importuotus vertimus ir IndexedDB duomenis."
   },
   "sidebarTitle": {
     "en": "Manage Languages",

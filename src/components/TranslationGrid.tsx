@@ -246,10 +246,11 @@ export function TranslationGrid({
             <DialogTrigger asChild>
               <button
                 type="button"
-                className="inline-flex h-5 w-5 items-center justify-center rounded text-stone-400 transition hover:text-stone-700"
+                className="inline-flex h-6 items-center gap-1.5 rounded px-1.5 text-stone-400 transition hover:bg-stone-100 hover:text-stone-700"
                 title={translate.sidebarTitle}
               >
                 <Settings className="h-3.5 w-3.5" />
+                <span className="text-xs">{translate.sidebarTitle}</span>
               </button>
             </DialogTrigger>
             <DialogContent>
@@ -315,18 +316,19 @@ export function TranslationGrid({
           })}
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-                  <p className="shrink-0">
-          {translate.gridMainLanguage} <span className="font-semibold text-stone-800">{baseLanguage}</span>
-        </p>
+          <p className="shrink-0 text-stone-500">
+            {translate.gridMainLanguage} <span className="font-semibold text-stone-700">{baseLanguage}</span>
+          </p>
           {/* Split view modal */}
           <Dialog>
             <DialogTrigger asChild>
               <button
                 type="button"
-                className="inline-flex h-5 w-5 items-center justify-center rounded text-stone-400 transition hover:text-stone-700"
+                className="inline-flex h-6 items-center gap-1.5 rounded px-1.5 text-stone-400 transition hover:bg-stone-100 hover:text-stone-700"
                 title="Split view"
               >
                 <Columns2 className="h-3.5 w-3.5" />
+                <span className="text-xs">Split view</span>
               </button>
             </DialogTrigger>
             <DialogContent>
@@ -386,33 +388,33 @@ export function TranslationGrid({
 
               return (
                 <Fragment key={key}>
-                  <tr className="bg-[#fff9ea]">
-                    <td colSpan={1 + comparisonLanguages.length} className="px-3 py-2">
-                      <div className="flex items-center gap-2">
-                        <Input
-                          readOnly
-                          value={key}
-                          className="h-8 bg-gray-100/70 font-mono text-xs text-stone-800"
-                          onFocus={(event) => event.currentTarget.select()}
+                  <tr className="border-t-2 border-stone-100">
+                    <td colSpan={1 + comparisonLanguages.length} className="bg-stone-50 px-3 py-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <span
+                          className="min-w-0 flex-1 truncate font-mono text-xs text-stone-400"
+                          title={key}
                           aria-label={withParams(translate.gridTranslationKeyAria, { key })}
-                        />
+                        >
+                          {key}
+                        </span>
                         <button
                           type="button"
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-stone-200 bg-white text-stone-600 transition hover:border-stone-300"
+                          className="inline-flex h-6 w-6 items-center justify-center rounded text-stone-400 transition hover:bg-stone-200 hover:text-stone-700"
                           onClick={() => void copyKey(key)}
                           aria-label={translate.gridCopyKey}
                           title={translate.gridCopyKey}
                         >
-                          {copiedKey === key ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                          {copiedKey === key ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                         </button>
                         <button
                           type="button"
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-stone-200 bg-white text-stone-600 transition hover:border-rose-200 hover:text-rose-600"
+                          className="inline-flex h-6 w-6 items-center justify-center rounded text-stone-400 transition hover:bg-rose-50 hover:text-rose-600"
                           onClick={() => onDeleteKey(key)}
                           aria-label={translate.gridDeleteKey}
                           title={translate.gridDeleteKey}
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 className="h-3 w-3" />
                         </button>
                       </div>
                     </td>
@@ -441,7 +443,7 @@ export function TranslationGrid({
                         <Textarea
                           value={entry[baseLanguage] ?? ''}
                           onChange={(event) => void onUpdate(key, baseLanguage, event.target.value)}
-                          className="min-h-20 bg-white"
+                          className="min-h-[52px] bg-white"
                         />
                       )}
                     </td>
@@ -474,7 +476,7 @@ export function TranslationGrid({
                               <Textarea
                                 value={entry[language] ?? ''}
                                 onChange={(event) => void onUpdate(key, language, event.target.value)}
-                                className={`min-h-20 ${isEmpty ? 'border-amber-300 bg-amber-50/40' : 'bg-white'}`}
+                                className={`min-h-[52px] ${isEmpty ? 'border-amber-300 bg-amber-50/40' : 'bg-white'}`}
                               />
                             )}
                             <div className="flex items-center justify-between gap-2">
