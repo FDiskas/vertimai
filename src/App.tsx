@@ -284,6 +284,7 @@ function App() {
             translations={translations}
             onUpdate={updateTranslation}
             onDeleteKey={onDeleteKey}
+            onError={(message) => showToast({ title: translate.commonError, description: message, variant: 'destructive' })}
           />
         </section>
       </main>

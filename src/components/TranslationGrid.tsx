@@ -1,4 +1,4 @@
-import { Check, Columns2, Copy, Plus, Settings, Sparkles, Trash2 } from 'lucide-react'
+import { Check, Columns2, Copy, Loader2, Plus, Settings, Sparkles, Trash2 } from 'lucide-react'
 import { Fragment, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useOpenAITranslate } from '../hooks/useOpenAITranslate'
@@ -18,6 +18,7 @@ interface TranslationGridProps {
   translations: Record<string, Record<string, string>>
   onUpdate: (key: string, language: string, value: string) => Promise<void>
   onDeleteKey: (key: string) => void
+  onError: (message: string) => void
 }
 
 interface StructuredValue {
@@ -125,6 +126,7 @@ export function TranslationGrid({
   translations,
   onUpdate,
   onDeleteKey,
+  onError,
 }: TranslationGridProps) {
   const apiKey = useTranslationStore((state) => state.apiKey)
   const allLanguages = useTranslationStore((state) => state.languages)
@@ -133,7 +135,7 @@ export function TranslationGrid({
   const getCompletion = useTranslationStore((state) => state.getCompletion)
   const addLanguage = useTranslationStore((state) => state.addLanguage)
   const removeLanguage = useTranslationStore((state) => state.removeLanguage)
-  const { translate: requestTranslate, isTranslating, error: translateError } = useOpenAITranslate()
+  const { translate: requestTranslate, isTranslating } = useOpenAITranslate()
   const [activeCell, setActiveCell] = useState<string | null>(null)
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
   const [newLanguageCode, setNewLanguageCode] = useState('')
@@ -180,8 +182,7 @@ export function TranslationGrid({
       })
       await onUpdate(key, language, translated)
     } catch (error) {
-      // Error state is surfaced from the hook.
-      throw new Error(error instanceof Error ? error.message : 'Unknown error')
+      onError(error instanceof Error ? error.message : 'Unknown error')
     } finally {
       setActiveCell(null)
     }
@@ -220,8 +221,8 @@ export function TranslationGrid({
       }
 
       await onUpdate(key, language, JSON.stringify(next))
-    } catch {
-      // Error state is surfaced from the hook.
+    } catch (error) {
+      onError(error instanceof Error ? error.message : 'Unknown error')
     } finally {
       setActiveCell(null)
     }
@@ -363,150 +364,137 @@ export function TranslationGrid({
           </Dialog> 
         </div>
      </div>
-      {translateError ? (
-        <div className="border-b border-rose-200 bg-rose-50 px-4 py-2 text-xs text-rose-700">{translateError}</div>
-      ) : null}
-      <div className="overflow-auto">
-        <table className="min-w-[900px] w-full border-collapse text-sm">
-          <thead className="sticky top-0 z-10 bg-stone-100/95 backdrop-blur">
-          <tr>
-            <th className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">{withParams(translate.gridOriginal, { language: baseLanguage })}</th>
-            {comparisonLanguages.map((language) => (
-              <th key={`header-${language}`} className="border-b border-stone-200 px-3 py-3 text-left font-semibold text-stone-700">
-                {withParams(translate.gridTranslation, { language })}
-              </th>
-            ))}
-          </tr>
-          </thead>
-          <tbody>
-            {visibleKeys.map((key) => {
-              const entry = translations[key]
-              const baseRaw = entry[baseLanguage] ?? ''
-              const baseStructured = parseStructuredTranslationValue(baseRaw) as StructuredValue | null
+      <div className="text-sm">
+        <div className="sticky top-0 z-10 hidden sm:grid sm:grid-cols-2 bg-stone-100/95 backdrop-blur border-b border-stone-200">
+          <div className="px-3 py-3 font-semibold text-stone-700">{withParams(translate.gridOriginal, { language: baseLanguage })}</div>
+          {comparisonLanguages.map((language) => (
+            <div key={`header-${language}`} className="px-3 py-3 font-semibold text-stone-700">
+              {withParams(translate.gridTranslation, { language })}
+            </div>
+          ))}
+        </div>
+        {visibleKeys.map((key) => {
+          const entry = translations[key]
+          const baseRaw = entry[baseLanguage] ?? ''
+          const baseStructured = parseStructuredTranslationValue(baseRaw) as StructuredValue | null
 
-              return (
-                <Fragment key={key}>
-                  <tr className="border-t-2 border-stone-100">
-                    <td colSpan={1 + comparisonLanguages.length} className="bg-stone-50 px-3 py-1.5">
-                      <div className="flex items-center gap-1.5">
-                        <span
-                          className="min-w-0 flex-1 truncate font-mono text-xs text-stone-400"
-                          title={key}
-                          aria-label={withParams(translate.gridTranslationKeyAria, { key })}
-                        >
-                          {key}
-                        </span>
-                        <button
-                          type="button"
-                          className="inline-flex h-6 w-6 items-center justify-center rounded text-stone-400 transition hover:bg-stone-200 hover:text-stone-700"
-                          onClick={() => void copyKey(key)}
-                          aria-label={translate.gridCopyKey}
-                          title={translate.gridCopyKey}
-                        >
-                          {copiedKey === key ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                        </button>
-                        <button
-                          type="button"
-                          className="inline-flex h-6 w-6 items-center justify-center rounded text-stone-400 transition hover:bg-rose-50 hover:text-rose-600"
-                          onClick={() => onDeleteKey(key)}
-                          aria-label={translate.gridDeleteKey}
-                          title={translate.gridDeleteKey}
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+          return (
+            <Fragment key={key}>
+              <div className="border-t-2 border-stone-100 bg-stone-50 px-3 py-1.5">
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className="min-w-0 flex-1 truncate font-mono text-xs text-stone-400"
+                    title={key}
+                    aria-label={withParams(translate.gridTranslationKeyAria, { key })}
+                  >
+                    {key}
+                  </span>
+                  <button
+                    type="button"
+                    className="inline-flex h-6 w-6 items-center justify-center rounded text-stone-400 transition hover:bg-stone-200 hover:text-stone-700"
+                    onClick={() => void copyKey(key)}
+                    aria-label={translate.gridCopyKey}
+                    title={translate.gridCopyKey}
+                  >
+                    {copiedKey === key ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                  </button>
+                  <button
+                    type="button"
+                    className="inline-flex h-6 w-6 items-center justify-center rounded text-stone-400 transition hover:bg-rose-50 hover:text-rose-600"
+                    onClick={() => onDeleteKey(key)}
+                    aria-label={translate.gridDeleteKey}
+                    title={translate.gridDeleteKey}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </button>
+                </div>
+              </div>
 
-                  <tr className="group align-top odd:bg-white even:bg-[#fffdf7] hover:bg-[#fff9ea]">
-                    <td className="border-b border-stone-100 px-3 py-3">
-                      {baseStructured ? (
-                        <div className="space-y-2">
-                          {flattenStructuredLeaves(baseStructured).map((leaf) => (
-                            <div key={`${key}:${baseLanguage}:${leaf.path}`} className="space-y-1">
-                              <p className="text-[11px] font-semibold uppercase tracking-wide text-stone-500">{leaf.path}</p>
-                              <Input
-                                value={leaf.value}
-                                onChange={(event) => {
-                                  const current = (parseStructuredTranslationValue(entry[baseLanguage] ?? '') as StructuredValue | null) ?? baseStructured
-                                  const next = setStructuredLeaf(current, leaf.path, event.target.value)
-                                  void onUpdate(key, baseLanguage, JSON.stringify(next))
-                                }}
-                                className="h-9 bg-white"
-                              />
-                            </div>
-                          ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 border-b border-stone-100 bg-white hover:bg-[#fff9ea]">
+                <div className="px-3 py-3 sm:border-r sm:border-stone-100">
+                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-500 sm:hidden">
+                    {withParams(translate.gridOriginal, { language: baseLanguage })}
+                  </p>
+                  {baseStructured ? (
+                    <div className="space-y-2">
+                      {flattenStructuredLeaves(baseStructured).map((leaf) => (
+                        <div key={`${key}:${baseLanguage}:${leaf.path}`} className="space-y-1">
+                          <p className="text-[11px] font-semibold uppercase tracking-wide text-stone-500">{leaf.path}</p>
+                          <Input
+                            value={leaf.value}
+                            onChange={(event) => {
+                              const current = (parseStructuredTranslationValue(entry[baseLanguage] ?? '') as StructuredValue | null) ?? baseStructured
+                              const next = setStructuredLeaf(current, leaf.path, event.target.value)
+                              void onUpdate(key, baseLanguage, JSON.stringify(next))
+                            }}
+                            className="h-9 bg-white"
+                          />
                         </div>
-                      ) : (
-                        <Textarea
-                          value={entry[baseLanguage] ?? ''}
-                          onChange={(event) => void onUpdate(key, baseLanguage, event.target.value)}
-                          className="min-h-[52px] bg-white"
-                        />
-                      )}
-                    </td>
-                    {comparisonLanguages.map((language) => {
-                      const cellId = `${key}:${language}`
-                      const structured = getStructuredForLanguage(baseRaw, entry[language] ?? '')
-                      const progress = structured ? getStructuredProgress(structured) : null
-                      const isEmpty = progress ? progress.filled < progress.total : !(entry[language] ?? '').trim()
+                      ))}
+                    </div>
+                  ) : (
+                    <Textarea
+                      value={entry[baseLanguage] ?? ''}
+                      onChange={(event) => void onUpdate(key, baseLanguage, event.target.value)}
+                      className="min-h-[52px] bg-white"
+                    />
+                  )}
+                </div>
+                {comparisonLanguages.map((language) => {
+                  const cellId = `${key}:${language}`
+                  const structured = getStructuredForLanguage(baseRaw, entry[language] ?? '')
+                  const progress = structured ? getStructuredProgress(structured) : null
+                  const isEmpty = progress ? progress.filled < progress.total : !(entry[language] ?? '').trim()
 
-                      return (
-                        <td key={cellId} className="border-b border-stone-100 px-3 py-3">
-                          <div className="space-y-2">
-                            {structured ? (
-                              <div className="space-y-2">
-                                {flattenStructuredLeaves(structured).map((leaf) => (
-                                  <div key={`${cellId}:${leaf.path}`} className="space-y-1">
-                                    <p className="text-[11px] font-semibold uppercase tracking-wide text-stone-500">{leaf.path}</p>
-                                    <Input
-                                      value={leaf.value}
-                                      onChange={(event) => {
-                                        const next = setStructuredLeaf(structured, leaf.path, event.target.value)
-                                        void onUpdate(key, language, JSON.stringify(next))
-                                      }}
-                                      className={isEmpty ? 'h-9 border-amber-300 bg-amber-50/40' : 'h-9 bg-white'}
-                                    />
-                                  </div>
-                                ))}
+                  return (
+                    <div key={cellId} className="px-3 py-3 border-t border-stone-100 sm:border-t-0">
+                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-500 sm:hidden">
+                        {withParams(translate.gridTranslation, { language })}
+                      </p>
+                      <div className="relative">
+                        <button
+                          type="button"
+                          className="absolute right-1.5 top-1.5 z-10 inline-flex h-6 w-6 items-center justify-center rounded text-stone-400 transition hover:bg-stone-100 hover:text-stone-700 disabled:cursor-not-allowed disabled:opacity-40"
+                          onClick={() => void (structured ? translateStructuredCell(key, language) : translateCell(key, language))}
+                          disabled={!apiKey.trim() || (isTranslating && activeCell !== cellId)}
+                          aria-label="AI Translate"
+                          title="AI Translate"
+                        >
+                          {activeCell === cellId
+                            ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            : <Sparkles className="h-3.5 w-3.5" />}
+                        </button>
+                        {structured ? (
+                          <div className="space-y-2 pr-8">
+                            {flattenStructuredLeaves(structured).map((leaf) => (
+                              <div key={`${cellId}:${leaf.path}`} className="space-y-1">
+                                <p className="text-[11px] font-semibold uppercase tracking-wide text-stone-500">{leaf.path}</p>
+                                <Input
+                                  value={leaf.value}
+                                  onChange={(event) => {
+                                    const next = setStructuredLeaf(structured, leaf.path, event.target.value)
+                                    void onUpdate(key, language, JSON.stringify(next))
+                                  }}
+                                  className={isEmpty ? 'h-9 border-amber-300 bg-amber-50/40' : 'h-9 bg-white'}
+                                />
                               </div>
-                            ) : (
-                              <Textarea
-                                value={entry[language] ?? ''}
-                                onChange={(event) => void onUpdate(key, language, event.target.value)}
-                                className={`min-h-[52px] ${isEmpty ? 'border-amber-300 bg-amber-50/40' : 'bg-white'}`}
-                              />
-                            )}
-                            <div className="flex items-center justify-between gap-2">
-                              <span className={`text-[11px] font-medium ${isEmpty ? 'text-amber-700' : 'text-stone-400'}`}>
-                                {progress
-                                  ? withParams(translate.gridProgressFields, { filled: progress.filled, total: progress.total })
-                                  : isEmpty
-                                    ? translate.gridProgressMissing
-                                    : withParams(translate.gridProgressChars, { count: (entry[language] ?? '').length })}
-                              </span>
-                              <Button
-                                variant="secondary"
-                                size="sm"
-                                onClick={() => {
-                                  return void (structured ? translateStructuredCell(key, language) : translateCell(key, language))
-                                }}
-                                disabled={!apiKey.trim() || (isTranslating && activeCell !== cellId)}
-                              >
-                                <Sparkles className="mr-2 h-3.5 w-3.5" />
-                                {activeCell === cellId ? translate.gridTranslating : translate.gridAiTranslate}
-                              </Button>
-                            </div>
+                            ))}
                           </div>
-                        </td>
-                      )
-                    })}
-                  </tr>
-                </Fragment>
-              )
-            })}
-          </tbody>
-        </table>
+                        ) : (
+                          <Textarea
+                            value={entry[language] ?? ''}
+                            onChange={(event) => void onUpdate(key, language, event.target.value)}
+                            className={`min-h-[52px] pr-8 ${isEmpty ? 'border-amber-300 bg-amber-50/40' : 'bg-white'}`}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </Fragment>
+          )
+        })}
       </div>
     </div>
   )

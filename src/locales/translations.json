@@ -235,26 +235,6 @@
     "en": "Delete key",
     "lt": "Istrinti rakta"
   },
-  "gridProgressFields": {
-    "en": "{filled}/{total} fields",
-    "lt": "{filled}/{total} laukai"
-  },
-  "gridProgressMissing": {
-    "en": "Missing translation",
-    "lt": "Truksta vertimo"
-  },
-  "gridProgressChars": {
-    "en": "{count} chars",
-    "lt": "{count} simb."
-  },
-  "gridAiTranslate": {
-    "en": "AI Translate",
-    "lt": "AI versti"
-  },
-  "gridTranslating": {
-    "en": "Translating...",
-    "lt": "Verciama..."
-  },
   "openaiErrorMissingApiKey": {
     "en": "Please enter OPENAI_API_KEY in settings first.",
     "lt": "Pirmiausia nustatymuose iveskite OPENAI_API_KEY."
