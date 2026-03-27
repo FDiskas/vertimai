@@ -76,7 +76,7 @@ export function Toolbar({
           </Button>
           <Button variant="destructive" onClick={onReset}>
             <RotateCcw className="mr-2 h-4 w-4" />
-            {translate.commonReset}
+            {translate.commonClear}
           </Button>
         </div>
       </div>

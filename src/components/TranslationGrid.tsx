@@ -1,11 +1,14 @@
-import { Check, Copy, Sparkles, Trash2 } from 'lucide-react'
+import { Check, Columns2, Copy, Plus, Settings, Sparkles, Trash2 } from 'lucide-react'
 import { Fragment, useState } from 'react'
+import type { FormEvent } from 'react'
 import { useOpenAITranslate } from '../hooks/useOpenAITranslate'
 import { parseStructuredTranslationValue } from '../lib/translation-utils'
 import { useTranslationStore } from '../store/useTranslationStore'
 import { translate, withParams } from '../templates/translate-template'
 import translateTemplateSource from '../templates/translate-template.ts?raw'
+import { Badge } from './ui/badge'
 import { Button } from './ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 
@@ -125,15 +128,27 @@ export function TranslationGrid({
 }: TranslationGridProps) {
   const apiKey = useTranslationStore((state) => state.apiKey)
   const allLanguages = useTranslationStore((state) => state.languages)
+  const selectedLanguages = useTranslationStore((state) => state.selectedLanguages)
+  const setSelectedLanguages = useTranslationStore((state) => state.setSelectedLanguages)
+  const getCompletion = useTranslationStore((state) => state.getCompletion)
+  const addLanguage = useTranslationStore((state) => state.addLanguage)
+  const removeLanguage = useTranslationStore((state) => state.removeLanguage)
   const { translate: requestTranslate, isTranslating, error: translateError } = useOpenAITranslate()
   const [activeCell, setActiveCell] = useState<string | null>(null)
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const [newLanguageCode, setNewLanguageCode] = useState('')
 
-  const nonBaseLanguages = allLanguages.filter(
-    (language, index, list) => language !== baseLanguage && list.indexOf(language) === index,
-  )
+  const submitLanguage = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const code = newLanguageCode.trim()
+    if (!code) return
+    await addLanguage(code)
+    setNewLanguageCode('')
+  }
+
+  const rightLanguage = selectedLanguages[1]
   const fallbackLanguage = allLanguages.find((language) => language !== baseLanguage) ?? baseLanguage
-  const comparisonLanguages = nonBaseLanguages.length > 0 ? nonBaseLanguages : [fallbackLanguage]
+  const comparisonLanguages = rightLanguage && rightLanguage !== baseLanguage ? [rightLanguage] : [fallbackLanguage]
 
   if (visibleKeys.length === 0) {
     return (
@@ -225,11 +240,129 @@ export function TranslationGrid({
   return (
     <div className="surface-panel overflow-hidden">
       <div className="flex items-center justify-between border-b border-stone-200 px-4 py-2 text-xs text-stone-600">
-        <p className="font-medium">{translate.gridFilteredInfo}</p>
-        <p>
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Languages modal */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <button
+                type="button"
+                className="inline-flex h-5 w-5 items-center justify-center rounded text-stone-400 transition hover:text-stone-700"
+                title={translate.sidebarTitle}
+              >
+                <Settings className="h-3.5 w-3.5" />
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{translate.sidebarTitle}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-3 pt-2">
+                {allLanguages.map((language) => {
+                  const completion = getCompletion(language)
+                  const isBase = language === baseLanguage
+                  return (
+                    <div key={language} className="surface-subtle space-y-2 px-3 py-2 rounded-md">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-semibold text-stone-800">{language}</span>
+                        <div className="flex items-center gap-2">
+                          <Badge>{completion.percent}% ({completion.translated}/{completion.total})</Badge>
+                          <button
+                            type="button"
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-stone-200 bg-white text-stone-500 transition hover:border-rose-200 hover:text-rose-600 disabled:cursor-not-allowed disabled:opacity-50"
+                            onClick={() => void removeLanguage(language)}
+                            disabled={isBase}
+                            title={isBase ? translate.sidebarBaseLanguageCannotBeRemoved : withParams(translate.sidebarRemoveLanguage, { language })}
+                            aria-label={isBase ? translate.sidebarBaseLanguageCannotBeRemoved : withParams(translate.sidebarRemoveLanguage, { language })}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="h-2 rounded-full bg-stone-200">
+                        <div className="h-full rounded-full bg-amber-500 transition-all" style={{ width: `${completion.percent}%` }} />
+                      </div>
+                    </div>
+                  )
+                })}
+                <form className="space-y-2 border-t border-stone-200 pt-3" onSubmit={(event) => void submitLanguage(event)}>
+                  <label htmlFor="grid-new-language" className="block text-xs font-medium uppercase tracking-wide text-stone-500">
+                    {translate.sidebarAddLanguage}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="grid-new-language"
+                      placeholder={translate.sidebarAddLanguagePlaceholder}
+                      value={newLanguageCode}
+                      onChange={(event) => setNewLanguageCode(event.target.value)}
+                    />
+                    <Button type="submit" variant="secondary" size="sm" className="shrink-0">
+                      <Plus className="mr-2 h-3.5 w-3.5" />
+                      {translate.commonAdd}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {allLanguages.map((language) => {
+            const completion = getCompletion(language)
+            return (
+              <Badge key={language} className={language === baseLanguage ? 'bg-amber-100 text-amber-800 border-amber-200' : ''}>
+                {language} {completion.percent}%
+              </Badge>
+            )
+          })}
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+                  <p className="shrink-0">
           {translate.gridMainLanguage} <span className="font-semibold text-stone-800">{baseLanguage}</span>
         </p>
-      </div>
+          {/* Split view modal */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <button
+                type="button"
+                className="inline-flex h-5 w-5 items-center justify-center rounded text-stone-400 transition hover:text-stone-700"
+                title="Split view"
+              >
+                <Columns2 className="h-3.5 w-3.5" />
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Split view</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 pt-2">
+                <div className="space-y-2">
+                  <label className="block text-xs font-medium uppercase tracking-wide text-stone-500">{translate.sidebarLeft}</label>
+                  <select
+                    className="h-10 w-full rounded-md border border-stone-200 bg-white px-3 text-sm"
+                    value={selectedLanguages[0]}
+                    onChange={(event) => setSelectedLanguages(event.target.value, selectedLanguages[1])}
+                  >
+                    {allLanguages.map((language) => (
+                      <option key={`left-${language}`} value={language}>{language}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-xs font-medium uppercase tracking-wide text-stone-500">{translate.sidebarRight}</label>
+                  <select
+                    className="h-10 w-full rounded-md border border-stone-200 bg-white px-3 text-sm"
+                    value={selectedLanguages[1]}
+                    onChange={(event) => setSelectedLanguages(selectedLanguages[0], event.target.value)}
+                  >
+                    {allLanguages.map((language) => (
+                      <option key={`right-${language}`} value={language}>{language}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog> 
+        </div>
+     </div>
       {translateError ? (
         <div className="border-b border-rose-200 bg-rose-50 px-4 py-2 text-xs text-rose-700">{translateError}</div>
       ) : null}

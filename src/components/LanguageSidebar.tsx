@@ -10,8 +10,6 @@ import { Input } from './ui/input'
 interface LanguageSidebarProps {
   languages: LanguageCode[]
   baseLanguage: LanguageCode
-  selected: [LanguageCode, LanguageCode]
-  onSelect: (left: LanguageCode, right: LanguageCode) => void
   onAddLanguage: (language: LanguageCode) => Promise<void>
   onRemoveLanguage: (language: LanguageCode) => Promise<void>
   getCompletion: (language: LanguageCode) => { percent: number; translated: number; total: number }
@@ -20,8 +18,6 @@ interface LanguageSidebarProps {
 export function LanguageSidebar({
   languages,
   baseLanguage,
-  selected,
-  onSelect,
   onAddLanguage,
   onRemoveLanguage,
   getCompletion,
@@ -43,40 +39,9 @@ export function LanguageSidebar({
     <aside className="surface-panel h-fit space-y-4 p-4 md:sticky md:top-[76px]">
       <div>
         <h2 className="text-base font-semibold text-stone-900">{translate.sidebarTitle}</h2>
-        <p className="text-xs text-stone-600">{translate.sidebarDescription}</p>
       </div>
 
       <div className="space-y-2">
-        <label className="block text-xs font-medium uppercase tracking-wide text-stone-500">{translate.sidebarLeft}</label>
-        <select
-          className="h-10 w-full rounded-md border border-stone-200 bg-white px-3 text-sm"
-          value={selected[0]}
-          onChange={(event) => onSelect(event.target.value, selected[1])}
-        >
-          {languages.map((language) => (
-            <option key={`left-${language}`} value={language}>
-              {language}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="space-y-2">
-        <label className="block text-xs font-medium uppercase tracking-wide text-stone-500">{translate.sidebarRight}</label>
-        <select
-          className="h-10 w-full rounded-md border border-stone-200 bg-white px-3 text-sm"
-          value={selected[1]}
-          onChange={(event) => onSelect(selected[0], event.target.value)}
-        >
-          {languages.map((language) => (
-            <option key={`right-${language}`} value={language}>
-              {language}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="space-y-2 pt-2">
         {languages.map((language) => {
           const completion = getCompletion(language)
           const isBaseLanguage = language === baseLanguage

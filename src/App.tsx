@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ChevronUp, Download, Github } from 'lucide-react'
-import { LanguageSidebar } from './components/LanguageSidebar'
+import { ChevronUp, Github } from 'lucide-react'
 import { SettingsDialog } from './components/SettingsDialog'
 import { Toolbar } from './components/Toolbar'
 import { TranslationGrid } from './components/TranslationGrid'
@@ -66,8 +65,6 @@ function App() {
   const {
     fileName,
     translations,
-    languages,
-    baseLanguage,
     selectedLanguages,
     search,
     untranslatedOnly,
@@ -78,13 +75,9 @@ function App() {
     updateTranslation,
     addKey,
     removeKey,
-    addLanguage,
-    removeLanguage,
     setSearch,
     setUntranslatedOnly,
-    setSelectedLanguages,
     exportJson,
-    getCompletion,
     getVisibleKeys,
     clearAll,
   } = useTranslationStore()
@@ -115,9 +108,6 @@ function App() {
   const visibleKeys = getVisibleKeys()
   const totalKeys = Object.keys(translations).length
   const visibleCount = visibleKeys.length
-  const rightCompletion = getCompletion(selectedLanguages[1])
-  const untranslatedOnRight = totalKeys - rightCompletion.translated
-
   const showToast = useCallback((next: Omit<ToastState, 'open'>) => {
     setToast({ ...next, open: true })
   }, [])
@@ -259,52 +249,14 @@ function App() {
             <p className="text-xs text-stone-600">{translate.appSubtitle}</p>
           </div>
           <div className="flex items-center gap-2">
-            <select
-              className="h-9 rounded-md border border-stone-200 bg-white px-2 text-sm text-stone-700"
-              value={locale}
-              onChange={(event) => setLocale(event.target.value as 'en' | 'lt')}
-              aria-label="UI language"
-            >
-              <option value="en">English</option>
-              <option value="lt">Lietuviu</option>
-            </select>
-            <Button variant="secondary" size="sm" onClick={onExport}>
-              <Download className="mr-2 h-4 w-4" />
-              {translate.appQuickExport}
-            </Button>
             <SettingsDialog />
           </div>
         </div>
       </header>
 
-      <main className="mx-auto grid w-full max-w-[1400px] flex-1 grid-cols-1 gap-4 px-4 py-4 md:grid-cols-[300px_1fr] md:px-6">
-        <LanguageSidebar
-          languages={languages}
-          baseLanguage={baseLanguage}
-          selected={selectedLanguages}
-          onSelect={setSelectedLanguages}
-          onAddLanguage={addLanguage}
-          onRemoveLanguage={removeLanguage}
-          getCompletion={getCompletion}
-        />
-
+      <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-4 md:px-6">
         <section className="space-y-4">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-            <div className="metric-card">
-              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{translate.appMetricTranslationKeys}</p>
-              <p className="mt-1 text-2xl font-semibold text-stone-900">{totalKeys}</p>
-            </div>
-            <div className="metric-card">
-              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{translate.appMetricShownAfterFilter}</p>
-              <p className="mt-1 text-2xl font-semibold text-stone-900">{visibleCount}</p>
-            </div>
-            <div className="metric-card">
-              <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{withParams(translate.appMetricUntranslated, { language: selectedLanguages[1] })}</p>
-              <p className="mt-1 text-2xl font-semibold text-amber-700">{Math.max(untranslatedOnRight, 0)}</p>
-            </div>
-          </div>
-
-          <UploadZone onFileLoaded={importFile} onLoadDemoData={loadDemoData} />
+          {visibleKeys.length === 0 && <UploadZone onFileLoaded={importFile} onLoadDemoData={loadDemoData} />}
 
           <div className="sticky top-[72px] z-10 md:top-[78px]">
             <Toolbar
@@ -322,7 +274,7 @@ function App() {
           </div>
 
           <TranslationGrid
-            baseLanguage={baseLanguage}
+            baseLanguage={selectedLanguages[0]}
             visibleKeys={visibleKeys}
             translations={translations}
             onUpdate={updateTranslation}
@@ -332,7 +284,7 @@ function App() {
       </main>
 
       <footer className="border-t border-[#e9ddc6] bg-[#fff9ed]/80">
-        <div className="mx-auto w-full max-w-[1400px] px-4 py-3 text-center text-sm text-stone-600 md:px-6">
+        <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-4 py-3 text-sm text-stone-600 md:px-6">
           <a
             href="https://github.com/FDiskas/vertimai"
             target="_blank"
@@ -340,8 +292,28 @@ function App() {
             className="inline-flex items-center gap-2 font-medium text-stone-700 underline decoration-amber-400 underline-offset-4 hover:text-stone-900"
           >
             <Github className="h-4 w-4" aria-hidden="true" />
-            GitHub: FDiskas/vertimai
+            GitHub
           </a>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setLocale('en')}
+              className={`text-lg leading-none transition-opacity ${locale === 'en' ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
+              aria-label="English"
+              title="English"
+            >
+              🇬🇧
+            </button>
+            <button
+              type="button"
+              onClick={() => setLocale('lt')}
+              className={`text-lg leading-none transition-opacity ${locale === 'lt' ? 'opacity-100' : 'opacity-40 hover:opacity-70'}`}
+              aria-label="Lietuvių"
+              title="Lietuvių"
+            >
+              🇱🇹
+            </button>
+          </div>
         </div>
       </footer>
 
@@ -369,6 +341,7 @@ function App() {
           <Input
             value={newKeyDraft}
             onChange={(event) => setNewKeyDraft(event.target.value)}
+            autoFocus
             placeholder={translate.dialogAddKeyPlaceholder}
           />
           <AlertDialogFooter>

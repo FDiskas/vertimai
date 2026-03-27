@@ -27,10 +27,6 @@
     "en": "Export",
     "lt": "Eksportuoti"
   },
-  "commonReset": {
-    "en": "Reset",
-    "lt": "Atstatyti"
-  },
   "commonSave": {
     "en": "Save",
     "lt": "Išsaugoti"
@@ -54,18 +50,6 @@
   "appQuickExport": {
     "en": "Quick Export",
     "lt": "Greitas eksportas"
-  },
-  "appMetricTranslationKeys": {
-    "en": "Translation keys",
-    "lt": "Vertimo raktai"
-  },
-  "appMetricShownAfterFilter": {
-    "en": "Shown after filter",
-    "lt": "Rodoma po filtro"
-  },
-  "appMetricUntranslated": {
-    "en": "Untranslated ({language})",
-    "lt": "Neversta ({language})"
   },
   "appScrollToTop": {
     "en": "Scroll to top",
@@ -128,8 +112,8 @@
     "lt": "Tai pašalins visus importuotus vertimus, API raktą ir IndexedDB duomenis."
   },
   "sidebarTitle": {
-    "en": "Languages",
-    "lt": "Kalbos"
+    "en": "Manage Languages",
+    "lt": "Valdyti kalbas"
   },
   "sidebarDescription": {
     "en": "Select two languages for split view mode.",
