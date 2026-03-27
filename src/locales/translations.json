@@ -153,31 +153,31 @@
   },
   "toolbarSearchPlaceholder": {
     "en": "Search by key or value...",
-    "lt": "Ieskoti pagal rakta arba reiksme..."
-  },
+      "lt": "Ieškoti pagal raktą arba reikšmę..."
+    },
   "toolbarClearSearch": {
     "en": "Clear search",
-    "lt": "Isvalyti paieska"
+    "lt": "Išvalyti paiešką"
   },
   "toolbarUntranslatedOnly": {
     "en": "Untranslated only",
-    "lt": "Tik neisverstos"
+    "lt": "Tik neišverstos"
   },
   "toolbarAddNewKey": {
-    "en": "Add New Key",
-    "lt": "Prideti nauja rakta"
+    "en": "New Key",
+    "lt": "Naujas raktas"
   },
   "uploadTitle": {
     "en": "Upload a translations JSON file",
-    "lt": "Ikelkite vertimu JSON faila"
+    "lt": "Įkelkite vertimų JSON failą"
   },
   "uploadDescription": {
     "en": "Drag and drop or choose a file manually.",
-    "lt": "Nutempkite faila arba pasirinkite rankiniu budu."
+    "lt": "Nutempkite failą arba pasirinkite rankiniu būdu."
   },
   "uploadButton": {
     "en": "Upload",
-    "lt": "Ikelti"
+    "lt": "Įkelti"
   },
   "uploadLoadDemoButton": {
     "en": "Demo data",
@@ -201,7 +201,7 @@
   },
   "settingsMissing": {
     "en": "Missing",
-    "lt": "Nera"
+    "lt": "Nėra"
   },
   "gridExampleTitle": {
     "en": "lib/translate.ts",
@@ -209,11 +209,7 @@
   },
   "gridExampleDescription": {
     "en": "Example of how to use the translations JSON file",
-    "lt": "Pavyzdys, kaip naudoti vertimu JSON faila"
-  },
-  "gridFilteredInfo": {
-    "en": "The table only shows active filtered results.",
-    "lt": "Lentele rodo tik aktyvius filtruotus rezultatus."
+    "lt": "Pavyzdys, kaip naudoti vertimų JSON failą"
   },
   "gridMainLanguage": {
     "en": "Main language:",

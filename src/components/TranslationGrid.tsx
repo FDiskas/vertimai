@@ -250,7 +250,6 @@ export function TranslationGrid({
                 title={translate.sidebarTitle}
               >
                 <Settings className="h-3.5 w-3.5" />
-                <span className="text-xs">{translate.sidebarTitle}</span>
               </button>
             </DialogTrigger>
             <DialogContent>
@@ -328,12 +327,11 @@ export function TranslationGrid({
                 title="Split view"
               >
                 <Columns2 className="h-3.5 w-3.5" />
-                <span className="text-xs">Split view</span>
               </button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Split view</DialogTitle>
+                <DialogTitle>{translate.sidebarDescription}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-2">
                 <div className="space-y-2">
