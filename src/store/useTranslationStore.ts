@@ -384,7 +384,6 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
 
   clearAll: async () => {
     await clearPersistedData();
-    localStorage.removeItem(API_KEY_STORAGE_KEY);
     set({
       fileName: "translations.json",
       translations: {},
@@ -393,7 +392,6 @@ export const useTranslationStore = create<TranslationState>((set, get) => ({
       selectedLanguages: ["en", "lt"],
       search: "",
       untranslatedOnly: false,
-      // apiKey: "",
       error: null,
     });
   },
