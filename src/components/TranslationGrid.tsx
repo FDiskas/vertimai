@@ -7,8 +7,9 @@ import { useTranslationStore } from '../store/useTranslationStore'
 import { translate, withParams } from '../templates/translate-template'
 import translateTemplateSource from '../templates/translate-template.ts?raw'
 import { Badge } from './ui/badge'
-import { Button } from './ui/button'
+import { Button, buttonVariants } from './ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 
@@ -142,6 +143,7 @@ export function TranslationGrid({
   const [translateAllLanguage, setTranslateAllLanguage] = useState<string | null>(null)
   const [translateAllProgress, setTranslateAllProgress] = useState({ current: 0, total: 0 })
   const [isTranslatingAll, setIsTranslatingAll] = useState(false)
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false)
   const cancelTranslateRef = useRef(false)
 
   const submitLanguage = async (event: FormEvent<HTMLFormElement>) => {
@@ -559,9 +561,16 @@ export function TranslationGrid({
       </div>
 
       <Dialog open={translateAllLanguage !== null} onOpenChange={(open) => {
-        if (!open) stopTranslateAll()
+        if (!open && !isTranslatingAll) {
+          setTranslateAllLanguage(null)
+        }
       }}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent 
+          className="sm:max-w-md" 
+          hideClose={isTranslatingAll}
+          onInteractOutside={(e) => { if (isTranslatingAll) e.preventDefault() }}
+          onEscapeKeyDown={(e) => { if (isTranslatingAll) e.preventDefault() }}
+        >
           <DialogHeader>
             <DialogTitle>
               {translateAllLanguage ? withParams(translate.dialogTranslateAllTitle, { language: translateAllLanguage }) : ''}
@@ -581,7 +590,7 @@ export function TranslationGrid({
           </div>
           <div className="flex justify-end pt-4 border-t border-stone-100">
             {isTranslatingAll ? (
-              <Button variant="secondary" onClick={stopTranslateAll}>
+              <Button variant="secondary" onClick={() => setShowCancelConfirm(true)}>
                 {translate.commonCancel}
               </Button>
             ) : (
@@ -592,6 +601,31 @@ export function TranslationGrid({
           </div>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={showCancelConfirm} onOpenChange={setShowCancelConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{translate.dialogTranslateAllCancelConfirmTitle}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {translate.dialogTranslateAllCancelConfirmDescription}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setShowCancelConfirm(false)}>
+              {translate.commonNoKeepGoing}
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                setShowCancelConfirm(false)
+                stopTranslateAll()
+              }}
+              className={buttonVariants({ variant: 'destructive' })}
+            >
+              {translate.commonYesStop}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

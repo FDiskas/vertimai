@@ -266,5 +266,21 @@
   "dialogTranslateAllDone": {
     "en": "Translation complete",
     "lt": "Vertimas baigtas"
+  },
+  "dialogTranslateAllCancelConfirmTitle": {
+    "en": "Stop translation?",
+    "lt": "Sustabdyti vertimą?"
+  },
+  "dialogTranslateAllCancelConfirmDescription": {
+    "en": "Are you sure you want to stop the bulk translation process? Progress will be saved up to this point.",
+    "lt": "Ar tikrai norite sustabdyti masinio vertimo procesą? Progresas bus išsaugotas iki šio momento."
+  },
+  "commonYesStop": {
+    "en": "Yes, stop",
+    "lt": "Taip, sustabdyti"
+  },
+  "commonNoKeepGoing": {
+    "en": "No, keep going",
+    "lt": "Ne, tęsti"
   }
 }
