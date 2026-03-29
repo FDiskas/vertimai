@@ -1,5 +1,5 @@
 import { Check, Columns2, Copy, Loader2, Plus, Settings, Sparkles, Trash2 } from 'lucide-react'
-import { Fragment, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useOpenAITranslate } from '../hooks/useOpenAITranslate'
 import { parseStructuredTranslationValue } from '../lib/translation-utils'
@@ -139,6 +139,10 @@ export function TranslationGrid({
   const [activeCell, setActiveCell] = useState<string | null>(null)
   const [copiedKey, setCopiedKey] = useState<string | null>(null)
   const [newLanguageCode, setNewLanguageCode] = useState('')
+  const [translateAllLanguage, setTranslateAllLanguage] = useState<string | null>(null)
+  const [translateAllProgress, setTranslateAllProgress] = useState({ current: 0, total: 0 })
+  const [isTranslatingAll, setIsTranslatingAll] = useState(false)
+  const cancelTranslateRef = useRef(false)
 
   const submitLanguage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -226,6 +230,54 @@ export function TranslationGrid({
     } finally {
       setActiveCell(null)
     }
+  }
+
+  const startTranslateAll = async (language: string) => {
+    const keysToTranslate = visibleKeys
+    if (keysToTranslate.length === 0) return
+
+    setTranslateAllLanguage(language)
+    setIsTranslatingAll(true)
+    cancelTranslateRef.current = false
+    setTranslateAllProgress({ current: 0, total: keysToTranslate.length })
+
+    let current = 0
+    for (const key of keysToTranslate) {
+      if (cancelTranslateRef.current) {
+        break
+      }
+
+      const entry = translations[key]
+      const baseRaw = entry?.[baseLanguage] ?? ''
+      const baseStructured = parseStructuredTranslationValue(baseRaw) as StructuredValue | null
+
+      try {
+        if (baseStructured) {
+          await translateStructuredCell(key, language)
+        } else {
+          await translateCell(key, language)
+        }
+      } catch (error) {
+        // Skip on error, keep progressing
+      }
+
+      current++
+      setTranslateAllProgress({ current, total: keysToTranslate.length })
+
+      // Small delay to prevent API abuse
+      await new Promise((r) => setTimeout(r, 300))
+    }
+
+    setIsTranslatingAll(false)
+    if (cancelTranslateRef.current) {
+      setTranslateAllLanguage(null)
+    }
+  }
+
+  const stopTranslateAll = () => {
+    cancelTranslateRef.current = true
+    setIsTranslatingAll(false)
+    setTranslateAllLanguage(null)
   }
 
   const copyKey = async (key: string) => {
@@ -357,8 +409,19 @@ export function TranslationGrid({
         <div className="sticky top-0 z-10 hidden sm:grid sm:grid-cols-2 bg-stone-100/95 backdrop-blur border-b border-stone-200">
           <div className="px-3 py-3 font-semibold text-stone-700">{withParams(translate.gridMainLanguage, { language: baseLanguage })}</div>
           {comparisonLanguages.map((language) => (
-            <div key={`header-${language}`} className="px-3 py-3 font-semibold text-stone-700">
-              {withParams(translate.gridTranslation, { language })}
+            <div key={`header-${language}`} className="px-3 py-3 font-semibold text-stone-700 flex justify-between items-center">
+              <span>{withParams(translate.gridTranslation, { language })}</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 text-stone-500 hover:text-amber-600 hover:bg-amber-50"
+                onClick={() => startTranslateAll(language)}
+                disabled={!apiKey.trim() || isTranslatingAll}
+                title={translate.gridAITranslateAll}
+              >
+                <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+                <span className="text-xs">{translate.gridAITranslateAll}</span>
+              </Button>
             </div>
           ))}
         </div>
@@ -437,8 +500,17 @@ export function TranslationGrid({
 
                   return (
                     <div key={cellId} className="px-3 py-3 border-t border-stone-100 sm:border-t-0">
-                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-500 sm:hidden">
-                        {withParams(translate.gridTranslation, { language })}
+                      <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-stone-500 sm:hidden flex justify-between items-center">
+                        <span>{withParams(translate.gridTranslation, { language })}</span>
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-1 text-stone-400 hover:text-amber-600 disabled:opacity-40"
+                          onClick={() => startTranslateAll(language)}
+                          disabled={!apiKey.trim() || isTranslatingAll}
+                          title={translate.gridAITranslateAll}
+                        >
+                          <Sparkles className="h-3 w-3" />
+                        </button>
                       </p>
                       <div className="relative">
                         <button
@@ -485,6 +557,41 @@ export function TranslationGrid({
           )
         })}
       </div>
+
+      <Dialog open={translateAllLanguage !== null} onOpenChange={(open) => {
+        if (!open) stopTranslateAll()
+      }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {translateAllLanguage ? withParams(translate.dialogTranslateAllTitle, { language: translateAllLanguage }) : ''}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-6 space-y-4">
+            <div className="flex justify-between text-sm text-stone-600">
+              <span>{withParams(translate.dialogTranslateAllProgress, { current: translateAllProgress.current, total: translateAllProgress.total })}</span>
+              <span>{Math.round((translateAllProgress.current / (translateAllProgress.total || 1)) * 100)}%</span>
+            </div>
+            <div className="h-2 rounded-full bg-stone-200 overflow-hidden">
+              <div
+                className="h-full bg-amber-500 transition-all duration-300 ease-out"
+                style={{ width: `${(translateAllProgress.current / (translateAllProgress.total || 1)) * 100}%` }}
+              />
+            </div>
+          </div>
+          <div className="flex justify-end pt-4 border-t border-stone-100">
+            {isTranslatingAll ? (
+              <Button variant="secondary" onClick={stopTranslateAll}>
+                {translate.commonCancel}
+              </Button>
+            ) : (
+              <Button onClick={() => setTranslateAllLanguage(null)}>
+                {translate.dialogTranslateAllDone}
+              </Button>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

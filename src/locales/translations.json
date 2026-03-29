@@ -250,5 +250,21 @@
   "openaiErrorTranslationFailed": {
     "en": "Translation failed.",
     "lt": "Vertimas nepavyko."
+  },
+  "gridAITranslateAll": {
+    "en": "AI Translate all visible",
+    "lt": "Versti viską matomą su AI"
+  },
+  "dialogTranslateAllTitle": {
+    "en": "Translating to {language}",
+    "lt": "Verčiama į {language}"
+  },
+  "dialogTranslateAllProgress": {
+    "en": "Translated {current} of {total}",
+    "lt": "Išversta {current} iš {total}"
+  },
+  "dialogTranslateAllDone": {
+    "en": "Translation complete",
+    "lt": "Vertimas baigtas"
   }
 }
